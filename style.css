@@ -1,0 +1,455 @@
+:root {
+  --bg: #f3f3f1;
+  --surface: #ffffff;
+  --surface-soft: #f8f8f5;
+  --text: #4f5a42;
+  --muted: #7b826d;
+
+  --primary: #b7cf59;
+  --primary-dark: #9fba47;
+  --secondary: #d8a15d;
+  --accent: #d9895d;
+  --accent-soft: #9ed4e6;
+
+  --border: rgba(120, 130, 109, 0.18);
+  --shadow: 0 20px 50px rgba(120, 130, 109, 0.14);
+
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(217, 164, 65, 0.18), transparent 34%),
+    var(--bg);
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.siteHeader {
+  width: calc(100% - 80px);
+  max-width: 1280px;
+  margin: 24px auto 0;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 36px rgba(120, 130, 109, 0.1);
+  backdrop-filter: blur(14px);
+  position: sticky;
+  top: 14px;
+  z-index: 20;
+}
+
+.siteHeaderBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.siteHeaderLogo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.siteHeaderBrand div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.siteHeaderBrand strong {
+  color: var(--text);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+}
+
+.siteHeaderBrand span {
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.siteHeaderNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.siteHeaderNav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 13px;
+  border-radius: 999px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+  background: var(--surface-soft);
+  border: 1px solid transparent;
+}
+
+.siteHeaderNav a:hover {
+  border-color: rgba(183, 207, 89, 0.45);
+  color: var(--primary-dark);
+}
+
+.pageShell {
+  min-height: calc(100vh - 96px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  gap: 32px;
+  padding: 32px 40px 40px;
+}
+
+.heroPanel,
+.loginPanel {
+  display: flex;
+  align-items: center;
+}
+
+.heroPanel {
+  padding: 48px;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(183, 207, 89, 0.20),
+      rgba(216, 161, 93, 0.18),
+      rgba(157, 212, 230, 0.18)
+    ),
+    var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+
+.heroBrand {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.heroLogo {
+  width: 110px;
+}
+
+.heroBrandText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brandOverline {
+  margin: 0;
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heroPanel h1 {
+  max-width: 720px;
+  margin: 0;
+  font-size: clamp(34px, 5vw, 62px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--text);
+}
+
+.heroText {
+  max-width: 650px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.heroFeatures {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 48px;
+}
+
+.heroFeatures article {
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+
+.heroFeatures span {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.heroFeatures strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.heroFeatures p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.loginPanel {
+  justify-content: center;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.loginEyebrow,
+.dashboardEyebrow {
+  margin: 0 0 8px;
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.loginCard h2 {
+  margin: 0 0 24px;
+  font-size: 34px;
+  letter-spacing: -0.04em;
+}
+
+.loginForm {
+  display: grid;
+  gap: 16px;
+} 
+
+.loginForm label {
+  display: grid;
+  gap: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.loginForm input {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+}
+
+.loginForm input:focus {
+  border-color: rgba(183, 207, 89, 0.55);
+  box-shadow: 0 0 0 4px rgba(183, 207, 89, 0.16);
+}
+
+.loginForm button,
+.dashboardHeader button {
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  font-weight: 800;
+}
+
+.loginForm button:hover,
+.dashboardHeader button:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--accent));
+}
+
+.loginStatus {
+  min-height: 20px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.demoAccess {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.demoAccess p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.demoButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demoButtons button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.demoButtons button:hover {
+  border-color: rgba(183, 207, 89, 0.45);
+  color: var(--primary-dark);
+}
+
+.dashboard {
+  max-width: 1120px;
+  margin: 0 auto 40px;
+  padding: 0 40px;
+}
+
+.dashboard.isHidden {
+  display: none;
+}
+
+.dashboardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.dashboardHeader h2 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: -0.04em;
+}
+
+.dashboardContent {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.moduleCard {
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(31, 41, 51, 0.08);
+}
+
+.moduleCard h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.moduleCard p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+@media (max-width: 960px) {
+  .pageShell {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .heroPanel {
+    padding: 32px 24px;
+  }
+
+  .heroFeatures {
+    grid-template-columns: 1fr;
+    margin-top: 32px;
+  }
+
+  .dashboard {
+    padding: 0 18px 28px;
+  }
+
+  .dashboardContent {
+    grid-template-columns: 1fr;
+  }
+
+  .siteHeader {
+  width: calc(100% - 36px);
+  margin-top: 18px;
+  border-radius: 24px;
+  align-items: flex-start;
+}
+
+.siteHeaderNav {
+  display: none;
+}
+
+.siteHeaderBrand span {
+  white-space: normal;
+  line-height: 1.25;
+}
+
+.siteHeaderLogo {
+  width: 42px;
+  height: 42px;
+}
+
+.pageShell {
+  min-height: auto;
+  padding-top: 18px;
+}
+
+}
+

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>ISPSA Académico</title>
+
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <header class="siteHeader">
+    <div class="siteHeaderBrand">
+      <img
+        src="./assets/logo-ispsa.png"
+        alt="Logo ISPSA"
+        class="siteHeaderLogo"
+      />
+
+      <div>
+        <strong>ISPSA</strong>
+        <span>Instituto Superior de Psicología Social Argentina N.º 1826</span>
+      </div>
+    </div>
+
+    <nav class="siteHeaderNav" aria-label="Navegación principal">
+      <a href="#login">Acceso institucional</a>
+      <a href="#dashboard">Paneles</a>
+    </nav>
+  </header>
+
+  <main class="pageShell">
+
+    <section class="heroPanel">
+      
+            <div class="heroBrand">
+    <img
+        src="./assets/logo-ispsa.png"
+        alt="Logo ISPSA"
+        class="heroLogo"
+    />
+
+    <div class="heroBrandText">
+        <p class="brandOverline">Instituto Superior de Psicología Social Argentina</p>
+        <h1>Plataforma Académica ISPSA</h1>
+        <p class="heroText">
+        Instituto Superior de Psicología Social Argentina N.º 1826.
+        Un espacio digital para organizar alumnos, docentes, materias,
+        inscripciones y notas de manera simple, clara y centralizada.
+        </p>
+    </div>
+</div>
+
+      <div class="heroFeatures">
+        <article>
+          <span>01</span>
+          <strong>Gestión académica</strong>
+          <p>Alumnos, docentes, materias e inscripciones.</p>
+        </article>
+
+        <article>
+          <span>02</span>
+          <strong>Panel docente</strong>
+          <p>Consulta de cursos y carga básica de notas.</p>
+        </article>
+
+        <article>
+          <span>03</span>
+          <strong>Acceso por roles</strong>
+          <p>Administrador, secretaría, docente y alumno.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="login" class="loginPanel">
+      <div class="loginCard">
+        <p class="loginEyebrow">Acceso institucional</p>
+
+        <h2>Ingresar</h2>
+
+        <form id="loginForm" class="loginForm">
+          <label>
+            Email
+            <input
+            type="email"
+            id="emailInput"
+            placeholder="usuario@ispsa1826.edu.ar"
+            required
+            />
+          </label>
+
+          <label>
+            Contraseña
+            <input
+              type="password"
+              id="passwordInput"
+              placeholder="••••••••"
+              required
+            />
+          </label>
+
+          <button type="submit">Ingresar a la plataforma</button>
+        </form>
+
+        <p id="loginStatus" class="loginStatus"></p>
+
+        <div class="demoAccess">
+          <p>Accesos de prueba visual:</p>
+
+          <div class="demoButtons">
+            <button type="button" data-role="admin">Admin</button>
+            <button type="button" data-role="secretaria">Secretaría</button>
+            <button type="button" data-role="docente">Docente</button>
+            <button type="button" data-role="alumno">Alumno</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section id="dashboard" class="dashboard isHidden">
+    <header class="dashboardHeader">
+      <div>
+        <p class="dashboardEyebrow">Panel activo</p>
+        <h2 id="dashboardTitle">Panel</h2>
+      </div>
+
+      <button id="logoutBtn" type="button">Salir</button>
+    </header>
+
+    <div id="dashboardContent" class="dashboardContent"></div>
+  </section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-client.js"></script>
+<script src="./auth-service.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
