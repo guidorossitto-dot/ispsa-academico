@@ -1,3 +1,4 @@
+//app.js
 (() => {
   "use strict";
 
@@ -144,44 +145,99 @@
     return "alumno";
   }
 
-  if (loginForm) {
-    loginForm.addEventListener("submit", (event) => {
-      event.preventDefault();
+  async function handleLogin(event) {
+  event.preventDefault();
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
-      if (!email || !password) {
-        showStatus("Completá email y contraseña.", true);
-        return;
-      }
-
-      const role = guessRoleByEmail(email);
-
-      showStatus("Ingreso de prueba correcto. Luego esto se conectará con Supabase.");
-
-      renderDashboard(role);
-    });
+  if (!email || !password) {
+    showStatus("Completá email y contraseña.", true);
+    return;
   }
 
-  document.querySelectorAll("[data-role]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const role = button.dataset.role;
-
-      showStatus(`Vista de prueba: ${role}.`);
-
-      renderDashboard(role);
-    });
-  });
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      dashboard.classList.add("isHidden");
-
-      if (emailInput) emailInput.value = "";
-      if (passwordInput) passwordInput.value = "";
-
-      showStatus("Sesión cerrada.");
-    });
+  if (!window.App?.auth) {
+    showStatus("El servicio de autenticación no está disponible.", true);
+    return;
   }
+
+  try {
+    showStatus("Ingresando...");
+
+    const { profile } = await window.App.auth.signIn(email, password);
+
+    if (!profile) {
+      showStatus("Ingreso correcto, pero no se encontró el perfil.", true);
+      return;
+    }
+
+    if (profile.role === "admin") {
+      window.location.href = "./admin.html";
+      return;
+    }
+
+    showStatus("Ingreso correcto.");
+    renderDashboard(profile.role);
+  } catch (error) {
+    console.error(error);
+
+    showStatus(
+      "No se pudo ingresar. Revisá el email, la contraseña o el perfil del usuario.",
+      true
+    );
+  }
+}
+
+async function handleLogout() {
+  try {
+    if (window.App?.auth) {
+      await window.App.auth.signOut();
+    }
+
+    dashboard.classList.add("isHidden");
+
+    if (emailInput) emailInput.value = "";
+    if (passwordInput) passwordInput.value = "";
+
+    showStatus("Sesión cerrada.");
+  } catch (error) {
+    console.error(error);
+    showStatus("No se pudo cerrar sesión.", true);
+  }
+}
+
+async function restoreSession() {
+  if (!window.App?.auth) return;
+
+  try {
+    const session = await window.App.auth.getSession();
+
+    if (!session) return;
+
+    const profile = await window.App.auth.getCurrentProfile();
+
+    if (!profile) return;
+
+    if (profile.role === "admin") {
+      window.location.href = "./admin.html";
+      return;
+    }
+
+    showStatus("Sesión activa.");
+    renderDashboard(profile.role);
+  } catch (error) {
+    console.error(error);
+    showStatus("No se pudo restaurar la sesión.", true);
+  }
+}
+
+if (loginForm) {
+  loginForm.addEventListener("submit", handleLogin);
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", handleLogout);
+}
+
+restoreSession();
 })();

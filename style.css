@@ -154,12 +154,18 @@ button {
 }
 
 .heroBrand {
-  flex-direction: column;
-  align-items: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  width: 100%;
 }
 
 .heroLogo {
-  width: 110px;
+  width: 78px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .heroBrandText {
@@ -402,14 +408,156 @@ button {
   line-height: 1.45;
 }
 
+
+.headerLogoutBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 13px;
+  border-radius: 999px;
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: 0;
+}
+
+.headerLogoutBtn:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--accent));
+}
+
+.adminShell {
+  width: calc(100% - 80px);
+  max-width: 1280px;
+  margin: 32px auto 48px;
+}
+
+.adminHero {
+  padding: 34px;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(183, 207, 89, 0.18),
+      rgba(216, 161, 93, 0.14),
+      rgba(158, 212, 230, 0.14)
+    ),
+    var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.adminHero h1 {
+  margin: 0 0 10px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--text);
+}
+
+.adminHeroText {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.adminModules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.adminModuleCard {
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(120, 130, 109, 0.08);
+}
+
+.adminModuleCard span {
+  display: inline-flex;
+  margin-bottom: 18px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.adminModuleCard h2 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.adminModuleCard p {
+  min-height: 44px;
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.adminModuleCard button {
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-weight: 800;
+  border: 1px solid var(--border);
+}
+
+.adminModuleCard button:hover {
+  border-color: rgba(183, 207, 89, 0.45);
+  color: var(--primary-dark);
+  background: #fcfcf8;
+}
 @media (max-width: 960px) {
+  .siteHeader {
+    width: calc(100% - 36px);
+    margin-top: 18px;
+    border-radius: 24px;
+    align-items: flex-start;
+  }
+
+  .siteHeaderNav {
+    display: none;
+  }
+
+  .siteHeaderBrand span {
+    white-space: normal;
+    line-height: 1.25;
+  }
+
+  .siteHeaderLogo {
+    width: 42px;
+    height: 42px;
+  }
+
   .pageShell {
+    min-height: auto;
     grid-template-columns: 1fr;
     padding: 18px;
+    padding-top: 18px;
   }
 
   .heroPanel {
     padding: 32px 24px;
+  }
+
+  .heroBrand {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .heroLogo {
+    width: 68px;
   }
 
   .heroFeatures {
@@ -425,31 +573,16 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .siteHeader {
-  width: calc(100% - 36px);
-  margin-top: 18px;
-  border-radius: 24px;
-  align-items: flex-start;
-}
+  .adminShell {
+    width: calc(100% - 36px);
+    margin-top: 18px;
+  }
 
-.siteHeaderNav {
-  display: none;
-}
+  .adminHero {
+    padding: 26px 22px;
+  }
 
-.siteHeaderBrand span {
-  white-space: normal;
-  line-height: 1.25;
+  .adminModules {
+    grid-template-columns: 1fr;
+  }
 }
-
-.siteHeaderLogo {
-  width: 42px;
-  height: 42px;
-}
-
-.pageShell {
-  min-height: auto;
-  padding-top: 18px;
-}
-
-}
-

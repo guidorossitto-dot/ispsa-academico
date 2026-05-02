@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Panel administrador | ISPSA</title>
+
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <header class="siteHeader">
+    <div class="siteHeaderBrand">
+      <img
+        src="./assets/logo-ispsa.png"
+        alt="Logo ISPSA"
+        class="siteHeaderLogo"
+      />
+
+      <div>
+        <strong>ISPSA</strong>
+        <span>Panel académico institucional</span>
+      </div>
+    </div>
+
+    <nav class="siteHeaderNav" aria-label="Navegación principal">
+      <a href="./admin.html">Inicio</a>
+      <button id="logoutBtn" type="button" class="headerLogoutBtn">Salir</button>
+    </nav>
+  </header>
+
+  <main class="adminShell">
+    <section class="adminHero">
+      <div>
+        <p class="dashboardEyebrow">Panel administrador</p>
+        <h1>Gestión académica</h1>
+        <p id="adminWelcome" class="adminHeroText">
+          Cargando sesión...
+        </p>
+      </div>
+    </section>
+
+    <section class="adminModules" aria-label="Módulos administrativos">
+      <article class="adminModuleCard">
+        <span>01</span>
+        <h2>Alumnos</h2>
+        <p>Alta, edición y consulta de fichas de alumnos.</p>
+        <button type="button">Abrir módulo</button>
+      </article>
+
+      <article class="adminModuleCard">
+        <span>02</span>
+        <h2>Docentes</h2>
+        <p>Gestión de docentes y datos institucionales.</p>
+        <button type="button">Abrir módulo</button>
+      </article>
+
+      <article class="adminModuleCard">
+        <span>03</span>
+        <h2>Materias</h2>
+        <p>Creación de espacios curriculares y asignación docente.</p>
+        <button type="button">Abrir módulo</button>
+      </article>
+
+      <article class="adminModuleCard">
+        <span>04</span>
+        <h2>Inscripciones</h2>
+        <p>Vinculación de alumnos con materias y ciclos lectivos.</p>
+        <button type="button">Abrir módulo</button>
+      </article>
+
+      <article class="adminModuleCard">
+        <span>05</span>
+        <h2>Notas</h2>
+        <p>Consulta general y administración de calificaciones.</p>
+        <button type="button">Abrir módulo</button>
+      </article>
+
+      <article class="adminModuleCard">
+        <span>06</span>
+        <h2>Reportes</h2>
+        <p>Listados académicos para secretaría y dirección.</p>
+        <button type="button">Abrir módulo</button>
+      </article>
+    </section>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-client.js?v=3"></script>
+<script src="./auth-service.js?v=3"></script>
+<script src="./admin.js?v=3"></script>
+</body>
+</html>
