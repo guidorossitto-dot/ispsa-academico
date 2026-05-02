@@ -64,5 +64,23 @@
     logoutBtn.addEventListener("click", handleLogout);
   }
 
-  protectAdminPage();
+  function bindAdminModules() {
+  document.querySelectorAll("[data-admin-module]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const moduleName = button.dataset.adminModule;
+
+      if (moduleName === "students") {
+        if (!window.App?.studentsUI) {
+          alert("El módulo de alumnos no está disponible.");
+          return;
+        }
+
+        window.App.studentsUI.renderStudentsModule();
+      }
+    });
+  });
+}
+
+    bindAdminModules();
+    protectAdminPage();
 })();
