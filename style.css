@@ -587,17 +587,34 @@ button {
   }
   
   .formGrid {
-  grid-template-columns: 1fr;
-    }
+    grid-template-columns: 1fr;
+  }
 
-    .studentsTableRow {
+  .studentsTable {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .studentsTableRow {
     grid-template-columns: 1fr;
     gap: 6px;
-    }
+    width: 100%;
+    max-width: 100%;
+    padding: 14px;
+  }
 
-    .studentsTableHead {
+  .studentsTableRow span {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .studentsTableHead {
     display: none;
-    }
+  }
 }
 .adminWorkspace {
   margin-top: 24px;
@@ -757,4 +774,30 @@ button {
   color: var(--primary-dark);
   font-size: 12px;
   font-weight: 900;
+}
+/* Corrección mobile para listado de alumnos */
+.studentsList,
+.studentsTable {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.studentsTableRow {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.studentsTableRow span {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.statusPill {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
