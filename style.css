@@ -587,34 +587,35 @@ button {
   }
   
   .formGrid {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: 1fr;
+}
 
-  .studentsTable {
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-  }
+.studentsList {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+}
 
-  .studentsTableRow {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    width: 100%;
-    max-width: 100%;
-    padding: 14px;
-  }
+.studentsTable {
+  min-width: 760px;
+}
 
-  .studentsTableRow span {
-    display: block;
-    min-width: 0;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
+.studentsTableRow {
+  grid-template-columns: 1.4fr 0.7fr 1.5fr 1fr 0.7fr;
+  gap: 12px;
+}
 
-  .studentsTableHead {
-    display: none;
-  }
+.studentsTableHead {
+  display: grid;
+}
+
+.studentsTableRow span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 }
 .adminWorkspace {
   margin-top: 24px;
@@ -800,4 +801,32 @@ button {
 .statusPill {
   white-space: normal;
   overflow-wrap: anywhere;
+}
+/* Tabla de alumnos con scroll horizontal */
+.studentsList {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+
+.studentsTable {
+  width: 100%;
+  min-width: 760px;
+}
+
+.studentsTableRow {
+  display: grid;
+  grid-template-columns: 1.4fr 0.7fr 1.5fr 1fr 0.7fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.studentsTableRow span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
