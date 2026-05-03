@@ -1,7 +1,11 @@
+// students-ui.js
 (() => {
   "use strict";
 
   const App = window.App = window.App || {};
+
+  let studentsCache = [];
+  let editingStudentId = null;
 
   function escapeHTML(value) {
     return String(value ?? "")
@@ -16,10 +20,16 @@
     return document.getElementById("adminWorkspace");
   }
 
+  function normalizeText(value) {
+    return String(value || "").trim();
+  }
+
   function renderStudentsModule() {
     const workspace = getWorkspace();
 
     if (!workspace) return;
+
+    editingStudentId = null;
 
     workspace.innerHTML = `
       <div class="moduleHeader">
@@ -27,12 +37,23 @@
           <p class="dashboardEyebrow">Módulo académico</p>
           <h2>Alumnos</h2>
           <p>
-            Alta y consulta básica de estudiantes registrados en la plataforma.
+            Alta, consulta y edición de estudiantes registrados en la plataforma.
           </p>
         </div>
       </div>
 
       <form id="studentForm" class="studentForm">
+        <input type="hidden" name="student_id" id="studentIdInput" />
+
+        <div class="studentFormTop">
+          <div>
+            <h3 id="studentFormTitle">Nuevo alumno</h3>
+            <p id="studentFormSubtitle">
+              Cargá los datos básicos del estudiante.
+            </p>
+          </div>
+        </div>
+
         <div class="formGrid">
           <label>
             Nombre *
@@ -76,14 +97,29 @@
         </label>
 
         <div class="formActions">
-          <button type="submit">Guardar alumno</button>
+          <button id="studentSubmitBtn" type="submit">Guardar alumno</button>
+          <button id="cancelEditStudentBtn" type="button" class="secondaryBtn" hidden>
+            Cancelar edición
+          </button>
           <p id="studentFormStatus" class="formStatus"></p>
         </div>
       </form>
 
       <div class="studentsListHeader">
-        <h3>Listado de alumnos</h3>
-        <button id="refreshStudentsBtn" type="button">Actualizar</button>
+        <div>
+          <h3>Listado de alumnos</h3>
+          <p id="studentsCountText" class="studentsCountText"></p>
+        </div>
+
+        <div class="studentsListActions">
+          <input
+            id="studentsSearchInput"
+            type="search"
+            placeholder="Buscar por nombre, apellido, DNI o email"
+            aria-label="Buscar alumnos"
+          />
+          <button id="refreshStudentsBtn" type="button">Actualizar</button>
+        </div>
       </div>
 
       <div id="studentsList" class="studentsList">
@@ -98,32 +134,60 @@
   function bindStudentForm() {
     const form = document.getElementById("studentForm");
     const refreshBtn = document.getElementById("refreshStudentsBtn");
+    const searchInput = document.getElementById("studentsSearchInput");
+    const cancelEditBtn = document.getElementById("cancelEditStudentBtn");
+    const list = document.getElementById("studentsList");
 
     if (form) {
-      form.addEventListener("submit", handleCreateStudent);
+      form.addEventListener("submit", handleSubmitStudent);
     }
 
     if (refreshBtn) {
       refreshBtn.addEventListener("click", loadStudents);
     }
+
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        renderStudentsList(getFilteredStudents());
+      });
+    }
+
+    if (cancelEditBtn) {
+      cancelEditBtn.addEventListener("click", resetStudentForm);
+    }
+
+    if (list) {
+      list.addEventListener("click", handleStudentsListClick);
+    }
   }
 
-  async function handleCreateStudent(event) {
+  function readStudentForm() {
+    const form = document.getElementById("studentForm");
+
+    if (!form) return null;
+
+    const formData = new FormData(form);
+
+    return {
+      first_name: normalizeText(formData.get("first_name")),
+      last_name: normalizeText(formData.get("last_name")),
+      dni: normalizeText(formData.get("dni")),
+      email: normalizeText(formData.get("email")),
+      phone: normalizeText(formData.get("phone")),
+      status: normalizeText(formData.get("status")) || "activo",
+      notes: normalizeText(formData.get("notes"))
+    };
+  }
+
+  async function handleSubmitStudent(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
     const status = document.getElementById("studentFormStatus");
-    const formData = new FormData(form);
+    const submitBtn = document.getElementById("studentSubmitBtn");
+    const student = readStudentForm();
 
-    const student = {
-      first_name: String(formData.get("first_name") || "").trim(),
-      last_name: String(formData.get("last_name") || "").trim(),
-      dni: String(formData.get("dni") || "").trim(),
-      email: String(formData.get("email") || "").trim(),
-      phone: String(formData.get("phone") || "").trim(),
-      status: String(formData.get("status") || "activo").trim(),
-      notes: String(formData.get("notes") || "").trim()
-    };
+    if (!student) return;
 
     if (!student.first_name || !student.last_name) {
       setStatus(status, "Nombre y apellido son obligatorios.", true);
@@ -131,18 +195,31 @@
     }
 
     try {
-      setStatus(status, "Guardando...");
+      setStatus(status, editingStudentId ? "Actualizando..." : "Guardando...");
 
-      await App.studentsService.createStudent(student);
+      if (submitBtn) {
+        submitBtn.disabled = true;
+      }
+
+      if (editingStudentId) {
+        await App.studentsService.updateStudent(editingStudentId, student);
+        setStatus(status, "Alumno actualizado correctamente.");
+      } else {
+        await App.studentsService.createStudent(student);
+        setStatus(status, "Alumno guardado correctamente.");
+      }
 
       form.reset();
-
-      setStatus(status, "Alumno guardado correctamente.");
+      resetStudentFormMode();
 
       await loadStudents();
     } catch (error) {
       console.error(error);
-      setStatus(status, `No se pudo guardar: ${error.message}`, true);
+      setStatus(status, getFriendlyErrorMessage(error), true);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+      }
     }
   }
 
@@ -154,9 +231,9 @@
     try {
       list.innerHTML = `<p class="adminWorkspaceEmpty">Cargando alumnos...</p>`;
 
-      const students = await App.studentsService.listStudents();
+      studentsCache = await App.studentsService.listStudents();
 
-      renderStudentsList(students);
+      renderStudentsList(getFilteredStudents());
     } catch (error) {
       console.error(error);
 
@@ -168,15 +245,50 @@
     }
   }
 
+  function getFilteredStudents() {
+    const searchInput = document.getElementById("studentsSearchInput");
+    const term = normalizeText(searchInput?.value).toLowerCase();
+
+    if (!term) {
+      return studentsCache;
+    }
+
+    return studentsCache.filter((student) => {
+      const searchable = [
+        student.first_name,
+        student.last_name,
+        student.dni,
+        student.email,
+        student.phone,
+        student.status
+      ]
+        .map((value) => String(value || "").toLowerCase())
+        .join(" ");
+
+      return searchable.includes(term);
+    });
+  }
+
   function renderStudentsList(students) {
     const list = document.getElementById("studentsList");
+    const countText = document.getElementById("studentsCountText");
 
     if (!list) return;
+
+    if (countText) {
+      const total = studentsCache.length;
+      const visible = students.length;
+
+      countText.textContent =
+        total === visible
+          ? `${total} alumno${total === 1 ? "" : "s"} cargado${total === 1 ? "" : "s"}.`
+          : `${visible} de ${total} alumno${total === 1 ? "" : "s"}.`;
+    }
 
     if (!students.length) {
       list.innerHTML = `
         <p class="adminWorkspaceEmpty">
-          Todavía no hay alumnos cargados.
+          No hay alumnos para mostrar.
         </p>
       `;
       return;
@@ -190,25 +302,232 @@
           <span>Email</span>
           <span>Teléfono</span>
           <span>Estado</span>
+          <span>Acciones</span>
         </div>
 
-        ${students.map((student) => {
-          const fullName = `${student.last_name || ""}, ${student.first_name || ""}`;
-
-          return `
-            <div class="studentsTableRow">
-              <span>${escapeHTML(fullName)}</span>
-              <span>${escapeHTML(student.dni || "-")}</span>
-              <span>${escapeHTML(student.email || "-")}</span>
-              <span>${escapeHTML(student.phone || "-")}</span>
-              <span>
-                <strong class="statusPill">${escapeHTML(student.status || "activo")}</strong>
-              </span>
-            </div>
-          `;
-        }).join("")}
+        ${students.map(renderStudentRow).join("")}
       </div>
     `;
+  }
+
+  function renderStudentRow(student) {
+  const fullName = `${student.last_name || ""}, ${student.first_name || ""}`;
+  const isEditing = editingStudentId === student.id;
+  const status = student.status || "activo";
+  const isInactive = status === "baja";
+
+  return `
+    <div class="studentsTableRow ${isEditing ? "isEditing" : ""}" data-student-id="${escapeHTML(student.id)}">
+      <span>${escapeHTML(fullName)}</span>
+      <span>${escapeHTML(student.dni || "-")}</span>
+      <span>${escapeHTML(student.email || "-")}</span>
+      <span>${escapeHTML(student.phone || "-")}</span>
+      <span>
+        <strong class="statusPill statusPill--${escapeHTML(status)}">
+          ${escapeHTML(status)}
+        </strong>
+      </span>
+      <span class="studentsRowActions">
+        <button type="button" data-student-action="edit">Editar</button>
+
+        ${
+          isInactive
+            ? `<button type="button" data-student-action="reactivate">Reactivar</button>`
+            : `<button type="button" data-student-action="archive">Baja</button>`
+        }
+
+        <button type="button" data-student-action="delete" class="dangerBtn">Borrar</button>
+      </span>
+    </div>
+  `;
+}
+
+  async function handleStudentsListClick(event) {
+    const button = event.target.closest("[data-student-action]");
+
+    if (!button) return;
+
+    const row = button.closest("[data-student-id]");
+    const studentId = row?.dataset.studentId;
+    const action = button.dataset.studentAction;
+
+    if (!studentId || !action) return;
+
+    const student = studentsCache.find((item) => item.id === studentId);
+
+    if (!student) {
+      alert("No se encontró el alumno seleccionado.");
+      return;
+    }
+
+    if (action === "edit") {
+      startEditStudent(student);
+      return;
+    }
+
+    if (action === "archive") {
+      await archiveStudent(student);
+      return;
+    }
+
+    if (action === "reactivate") {
+      await reactivateStudent(student);
+      return;
+    }
+
+    if (action === "delete") {
+      await deleteStudent(student);
+    }
+  }
+
+  function startEditStudent(student) {
+    const form = document.getElementById("studentForm");
+    const title = document.getElementById("studentFormTitle");
+    const subtitle = document.getElementById("studentFormSubtitle");
+    const submitBtn = document.getElementById("studentSubmitBtn");
+    const cancelBtn = document.getElementById("cancelEditStudentBtn");
+    const status = document.getElementById("studentFormStatus");
+
+    if (!form) return;
+
+    editingStudentId = student.id;
+
+    form.elements.first_name.value = student.first_name || "";
+    form.elements.last_name.value = student.last_name || "";
+    form.elements.dni.value = student.dni || "";
+    form.elements.email.value = student.email || "";
+    form.elements.phone.value = student.phone || "";
+    form.elements.status.value = student.status || "activo";
+    form.elements.notes.value = student.notes || "";
+
+    if (title) {
+      title.textContent = "Editar alumno";
+    }
+
+    if (subtitle) {
+      subtitle.textContent = `Editando ficha de ${student.first_name || ""} ${student.last_name || ""}.`;
+    }
+
+    if (submitBtn) {
+      submitBtn.textContent = "Guardar cambios";
+    }
+
+    if (cancelBtn) {
+      cancelBtn.hidden = false;
+    }
+
+    setStatus(status, "");
+
+    renderStudentsList(getFilteredStudents());
+
+    form.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function resetStudentForm() {
+    const form = document.getElementById("studentForm");
+    const status = document.getElementById("studentFormStatus");
+
+    if (form) {
+      form.reset();
+    }
+
+    resetStudentFormMode();
+    setStatus(status, "");
+    renderStudentsList(getFilteredStudents());
+  }
+
+  function resetStudentFormMode() {
+    const title = document.getElementById("studentFormTitle");
+    const subtitle = document.getElementById("studentFormSubtitle");
+    const submitBtn = document.getElementById("studentSubmitBtn");
+    const cancelBtn = document.getElementById("cancelEditStudentBtn");
+
+    editingStudentId = null;
+
+    if (title) {
+      title.textContent = "Nuevo alumno";
+    }
+
+    if (subtitle) {
+      subtitle.textContent = "Cargá los datos básicos del estudiante.";
+    }
+
+    if (submitBtn) {
+      submitBtn.textContent = "Guardar alumno";
+    }
+
+    if (cancelBtn) {
+      cancelBtn.hidden = true;
+    }
+  }
+
+  async function archiveStudent(student) {
+    const fullName = `${student.first_name || ""} ${student.last_name || ""}`.trim();
+
+    const confirmed = confirm(
+      `¿Querés marcar como baja a ${fullName || "este alumno"}?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await App.studentsService.updateStudentStatus(student.id, "baja");
+
+      if (editingStudentId === student.id) {
+        resetStudentForm();
+      }
+
+      await loadStudents();
+    } catch (error) {
+      console.error(error);
+      alert(getFriendlyErrorMessage(error));
+    }
+  }
+
+  async function reactivateStudent(student) {
+  const fullName = `${student.first_name || ""} ${student.last_name || ""}`.trim();
+
+  const confirmed = confirm(
+    `¿Querés reactivar a ${fullName || "este alumno"}?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await App.studentsService.updateStudentStatus(student.id, "activo");
+
+    if (editingStudentId === student.id) {
+      resetStudentForm();
+    }
+
+    await loadStudents();
+  } catch (error) {
+    console.error(error);
+    alert(getFriendlyErrorMessage(error));
+  }
+}
+
+  async function deleteStudent(student) {
+    const fullName = `${student.first_name || ""} ${student.last_name || ""}`.trim();
+
+    const confirmed = confirm(
+      `Esto va a borrar definitivamente a ${fullName || "este alumno"}.\n\n¿Querés continuar?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await App.studentsService.deleteStudent(student.id);
+
+      if (editingStudentId === student.id) {
+        resetStudentForm();
+      }
+
+      await loadStudents();
+    } catch (error) {
+      console.error(error);
+      alert(getFriendlyErrorMessage(error));
+    }
   }
 
   function setStatus(element, message, isError = false) {
@@ -216,6 +535,24 @@
 
     element.textContent = message;
     element.classList.toggle("isError", isError);
+  }
+
+  function getFriendlyErrorMessage(error) {
+    const message = String(error?.message || "Ocurrió un error inesperado.");
+
+    if (
+      error?.code === "23505" ||
+      message.toLowerCase().includes("duplicate") ||
+      message.toLowerCase().includes("unique")
+    ) {
+      return "No se pudo guardar: ya existe un alumno con ese DNI.";
+    }
+
+    if (message.toLowerCase().includes("permission denied")) {
+      return "No tenés permisos suficientes para realizar esta acción.";
+    }
+
+    return `No se pudo completar la operación: ${message}`;
   }
 
   App.studentsUI = {

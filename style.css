@@ -830,3 +830,254 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ================================
+   Admin modules navigation
+================================ */
+
+.adminModuleButton {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-weight: 800;
+  border: 1px solid var(--border);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.adminModuleButton:hover {
+  border-color: rgba(183, 207, 89, 0.45);
+  color: var(--primary-dark);
+  background: #fcfcf8;
+}
+
+/* ================================
+   Students module
+================================ */
+
+.studentFormTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.studentFormTop h3 {
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.studentFormTop p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.secondaryBtn {
+  border: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+.secondaryBtn:hover {
+  border-color: rgba(183, 207, 89, 0.45) !important;
+  color: var(--primary-dark) !important;
+}
+
+.studentsListHeader {
+  align-items: flex-end;
+}
+
+.studentsCountText {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.studentsListActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.studentsListActions input {
+  min-width: 280px;
+  padding: 12px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+}
+
+.studentsListActions input:focus {
+  border-color: rgba(183, 207, 89, 0.55);
+  box-shadow: 0 0 0 4px rgba(183, 207, 89, 0.16);
+}
+
+.studentsRowActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.studentsRowActions button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 9px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.studentsRowActions button:hover {
+  border-color: rgba(183, 207, 89, 0.45);
+  color: var(--primary-dark);
+}
+
+.studentsRowActions .dangerBtn {
+  border-color: rgba(180, 35, 24, 0.25);
+  color: #b42318;
+  background: rgba(180, 35, 24, 0.06);
+}
+
+.studentsRowActions .dangerBtn:hover {
+  border-color: rgba(180, 35, 24, 0.45);
+  color: #912018;
+}
+
+.studentsTable {
+  width: 100%;
+  min-width: 980px;
+}
+
+.studentsTableRow {
+  display: grid;
+  grid-template-columns: 1.35fr 0.7fr 1.35fr 0.9fr 0.7fr 1.15fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.studentsTableRow.isEditing {
+  border-color: rgba(183, 207, 89, 0.65);
+  box-shadow: 0 0 0 4px rgba(183, 207, 89, 0.12);
+}
+
+.studentsTableHead {
+  grid-template-columns: 1.35fr 0.7fr 1.35fr 0.9fr 0.7fr 1.15fr;
+}
+
+.statusPill--activo {
+  background: rgba(183, 207, 89, 0.18);
+  color: var(--primary-dark);
+}
+
+.statusPill--pausado {
+  background: rgba(216, 161, 93, 0.16);
+  color: #9a641f;
+}
+
+.statusPill--egresado {
+  background: rgba(158, 212, 230, 0.22);
+  color: #31758a;
+}
+
+.statusPill--baja {
+  background: rgba(180, 35, 24, 0.08);
+  color: #b42318;
+}
+
+@media (max-width: 960px) {
+  .studentsListHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .studentsListActions {
+    justify-content: stretch;
+  }
+
+  .studentsListActions input,
+  .studentsListActions button {
+    width: 100%;
+  }
+
+  .studentsTable {
+    min-width: 980px;
+  }
+
+  .studentsTableRow,
+  .studentsTableHead {
+    grid-template-columns: 1.35fr 0.7fr 1.35fr 0.9fr 0.7fr 1.15fr;
+  }
+}
+
+/* ================================
+   Ajustes finos módulo Alumnos
+================================ */
+
+/* Asegura scroll horizontal en mobile */
+.studentsList {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* La tabla mantiene ancho mínimo y scrollea dentro del contenedor */
+.studentsTable {
+  min-width: 980px;
+}
+
+/* Botones más livianos */
+.studentForm button,
+.studentsListHeader button,
+.studentsRowActions button,
+.adminModuleButton,
+.headerLogoutBtn {
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Botón principal Guardar alumno */
+.studentForm button[type="submit"] {
+  font-weight: 650;
+}
+
+/* Botón Actualizar */
+.studentsListActions button {
+  font-weight: 600;
+}
+
+/* Botones Editar / Baja / Reactivar / Borrar */
+.studentsRowActions button {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Pastillas de estado: activo, baja, pausado, egresado */
+.statusPill {
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: capitalize;
+}
+
+/* Si querés que la tabla se sienta menos pesada */
+.studentsTableHead {
+  font-weight: 650;
+}
+
+.studentsTableRow {
+  font-size: 14px;
+}

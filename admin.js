@@ -1,3 +1,4 @@
+// admin.js
 (() => {
   "use strict";
 
@@ -13,38 +14,51 @@
     try {
       if (!window.App?.auth) {
         window.location.href = "./index.html";
-        return;
+        return null;
       }
 
       const session = await window.App.auth.getSession();
 
       if (!session) {
         window.location.href = "./index.html";
-        return;
+        return null;
       }
 
       const profile = await window.App.auth.getCurrentProfile();
 
       if (!profile) {
         window.location.href = "./index.html";
-        return;
+        return null;
       }
 
       if (profile.role !== "admin") {
         alert("No tenés permisos para acceder al panel administrador.");
         window.location.href = "./index.html";
-        return;
+        return null;
       }
 
-      const name = profile.full_name || profile.email || "Administrador";
-
-      setWelcome(
-        `Bienvenido/a, ${name}. Desde este panel podés administrar alumnos, docentes, materias, inscripciones, notas y reportes.`
-      );
+      return profile;
     } catch (error) {
       console.error(error);
       window.location.href = "./index.html";
+      return null;
     }
+  }
+
+  function renderWelcome(profile) {
+    const page = document.body?.dataset?.adminPage;
+    const name = profile.full_name || profile.email || "Administrador";
+
+    if (page === "students") {
+      setWelcome(
+        `Bienvenido/a, ${name}. Desde acá podés administrar altas, edición, consulta y estado de alumnos.`
+      );
+      return;
+    }
+
+    setWelcome(
+      `Bienvenido/a, ${name}. Desde este panel podés administrar alumnos, docentes, materias, inscripciones, notas y reportes.`
+    );
   }
 
   async function handleLogout() {
@@ -60,27 +74,45 @@
     }
   }
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", handleLogout);
+  function bindAdminModules() {
+    document.querySelectorAll("[data-admin-module]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const moduleName = button.dataset.adminModule;
+
+        if (moduleName === "students") {
+          window.location.href = "./students.html";
+        }
+      });
+    });
   }
 
-  function bindAdminModules() {
-  document.querySelectorAll("[data-admin-module]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const moduleName = button.dataset.adminModule;
+  function renderCurrentPageModule() {
+    const page = document.body?.dataset?.adminPage;
 
-      if (moduleName === "students") {
-        if (!window.App?.studentsUI) {
-          alert("El módulo de alumnos no está disponible.");
-          return;
-        }
-
-        window.App.studentsUI.renderStudentsModule();
+    if (page === "students") {
+      if (!window.App?.studentsUI) {
+        alert("El módulo de alumnos no está disponible.");
+        return;
       }
-    });
-  });
-}
+
+      window.App.studentsUI.renderStudentsModule();
+    }
+  }
+
+  async function initAdminPage() {
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", handleLogout);
+    }
 
     bindAdminModules();
-    protectAdminPage();
+
+    const profile = await protectAdminPage();
+
+    if (!profile) return;
+
+    renderWelcome(profile);
+    renderCurrentPageModule();
+  }
+
+  initAdminPage();
 })();
