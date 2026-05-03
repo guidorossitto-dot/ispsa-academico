@@ -1355,3 +1355,85 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ================================
+   Print student detail
+================================ */
+
+@media print {
+  body.isPrintingStudentDetail {
+    background: #ffffff;
+  }
+
+  body.isPrintingStudentDetail .siteHeader,
+  body.isPrintingStudentDetail .adminHero,
+  body.isPrintingStudentDetail .studentForm,
+  body.isPrintingStudentDetail .studentsListHeader,
+  body.isPrintingStudentDetail .studentsList,
+  body.isPrintingStudentDetail .studentDetailActions {
+    display: none !important;
+  }
+
+  body.isPrintingStudentDetail .adminShell {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  body.isPrintingStudentDetail .adminWorkspace {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    background: #ffffff;
+  }
+
+  body.isPrintingStudentDetail .studentDetailPanel {
+    display: block !important;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    background: #ffffff;
+  }
+
+  body.isPrintingStudentDetail .studentDetailHeader {
+    border-bottom: 1px solid #dddddd;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+  }
+
+  body.isPrintingStudentDetail .studentDetailHeader h3 {
+    font-size: 24px;
+    color: #111111;
+  }
+
+  body.isPrintingStudentDetail .studentDetailHeader p,
+  body.isPrintingStudentDetail .dashboardEyebrow {
+    color: #555555;
+  }
+
+  body.isPrintingStudentDetail .studentDetailGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  body.isPrintingStudentDetail .studentDetailCard {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 1px solid #dddddd;
+    box-shadow: none;
+    background: #ffffff;
+  }
+
+  body.isPrintingStudentDetail .studentDetailNotes {
+    margin-top: 12px;
+  }
+
+  body.isPrintingStudentDetail .statusPill {
+    border: 1px solid #cccccc;
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+}

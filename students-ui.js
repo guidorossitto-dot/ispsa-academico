@@ -741,6 +741,7 @@ function renderStudentDetail(student) {
       </div>
 
       <div class="studentDetailActions">
+        <button type="button" data-student-detail-action="print">Imprimir ficha</button>
         <button type="button" data-student-detail-action="edit">Editar ficha</button>
         <button type="button" data-student-detail-action="close" class="secondaryBtn">Cerrar</button>
       </div>
@@ -896,6 +897,11 @@ function handleStudentDetailClick(event) {
     return;
   }
 
+  if (action === "print") {
+    printStudentDetail();
+    return;
+  }
+
   if (action === "edit") {
     const student = studentsCache.find((item) => item.id === studentId);
 
@@ -906,6 +912,19 @@ function handleStudentDetailClick(event) {
 
     startEditStudent(student);
   }
+}
+
+function printStudentDetail() {
+  const panel = document.getElementById("studentDetailPanel");
+
+  if (!panel || panel.hidden) {
+    alert("Primero abrí la ficha de un alumno.");
+    return;
+  }
+
+  document.body.classList.add("isPrintingStudentDetail");
+
+  window.print();
 }
 
   function resetStudentForm() {
@@ -1039,6 +1058,10 @@ function handleStudentDetailClick(event) {
 
     return `No se pudo completar la operación: ${message}`;
   }
+
+  window.addEventListener("afterprint", () => {
+  document.body.classList.remove("isPrintingStudentDetail");
+});
 
   App.studentsUI = {
     renderStudentsModule,
