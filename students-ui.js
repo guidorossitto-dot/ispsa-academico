@@ -138,6 +138,23 @@
             placeholder="Buscar por nombre, apellido, DNI o email"
             aria-label="Buscar alumnos"
           />
+
+          <select id="studentsStatusFilter" aria-label="Filtrar por estado">
+            <option value="">Todos los estados</option>
+            <option value="activo">Activo</option>
+            <option value="pausado">Pausado</option>
+            <option value="egresado">Egresado</option>
+            <option value="baja">Baja</option>
+          </select>
+
+          <select id="studentsCohortFilter" aria-label="Filtrar por cohorte">
+            <option value="">Todas las cohortes</option>
+          </select>
+
+          <button id="clearStudentsFiltersBtn" type="button" class="secondaryBtn">
+            Limpiar
+          </button>
+
           <button id="refreshStudentsBtn" type="button">Actualizar</button>
         </div>
       </div>
@@ -155,6 +172,9 @@
     const form = document.getElementById("studentForm");
     const refreshBtn = document.getElementById("refreshStudentsBtn");
     const searchInput = document.getElementById("studentsSearchInput");
+    const statusFilter = document.getElementById("studentsStatusFilter");
+    const cohortFilter = document.getElementById("studentsCohortFilter");
+    const clearFiltersBtn = document.getElementById("clearStudentsFiltersBtn");
     const cancelEditBtn = document.getElementById("cancelEditStudentBtn");
     const list = document.getElementById("studentsList");
     const detailPanel = document.getElementById("studentDetailPanel");
@@ -171,6 +191,22 @@
       searchInput.addEventListener("input", () => {
         renderStudentsList(getFilteredStudents());
       });
+    }
+
+        if (statusFilter) {
+      statusFilter.addEventListener("change", () => {
+        renderStudentsList(getFilteredStudents());
+      });
+    }
+
+    if (cohortFilter) {
+      cohortFilter.addEventListener("change", () => {
+        renderStudentsList(getFilteredStudents());
+      });
+    }
+
+    if (clearFiltersBtn) {
+      clearFiltersBtn.addEventListener("click", clearStudentFilters);
     }
 
     if (cancelEditBtn) {
@@ -258,9 +294,10 @@
     try {
       list.innerHTML = `<p class="adminWorkspaceEmpty">Cargando alumnos...</p>`;
 
-      studentsCache = await App.studentsService.listStudents();
+        studentsCache = await App.studentsService.listStudents();
 
-      renderStudentsList(getFilteredStudents());
+        renderCohortFilterOptions();
+        renderStudentsList(getFilteredStudents());
     } catch (error) {
       console.error(error);
 
@@ -273,30 +310,100 @@
   }
 
   function getFilteredStudents() {
-    const searchInput = document.getElementById("studentsSearchInput");
-    const term = normalizeText(searchInput?.value).toLowerCase();
+  const searchInput = document.getElementById("studentsSearchInput");
+  const statusFilter = document.getElementById("studentsStatusFilter");
+  const cohortFilter = document.getElementById("studentsCohortFilter");
 
-    if (!term) {
-      return studentsCache;
+  const term = normalizeText(searchInput?.value).toLowerCase();
+  const selectedStatus = normalizeText(statusFilter?.value);
+  const selectedCohort = normalizeText(cohortFilter?.value);
+
+  return studentsCache.filter((student) => {
+    const studentStatus = normalizeText(student.status || "activo");
+    const studentCohort = normalizeText(student.cohort);
+
+    if (selectedStatus && studentStatus !== selectedStatus) {
+      return false;
     }
 
-    return studentsCache.filter((student) => {
-          const searchable = [
-        student.first_name,
-        student.last_name,
-        student.dni,
-        student.email,
-        student.phone,
-        student.program_name,
-        student.cohort,
-        student.status
-      ]
-        .map((value) => String(value || "").toLowerCase())
-        .join(" ");
+    if (selectedCohort && studentCohort !== selectedCohort) {
+      return false;
+    }
 
-      return searchable.includes(term);
-    });
+    if (!term) {
+      return true;
+    }
+
+    const searchable = [
+      student.first_name,
+      student.last_name,
+      student.dni,
+      student.email,
+      student.phone,
+      student.program_name,
+      student.cohort,
+      student.status
+    ]
+      .map((value) => String(value || "").toLowerCase())
+      .join(" ");
+
+    return searchable.includes(term);
+  });
+}
+
+function renderCohortFilterOptions() {
+  const cohortFilter = document.getElementById("studentsCohortFilter");
+
+  if (!cohortFilter) return;
+
+  const currentValue = cohortFilter.value;
+
+  const cohorts = [...new Set(
+    studentsCache
+      .map((student) => normalizeText(student.cohort))
+      .filter(Boolean)
+  )].sort((a, b) =>
+    String(b).localeCompare(String(a), "es", {
+      numeric: true,
+      sensitivity: "base"
+    })
+  );
+
+  cohortFilter.innerHTML = `
+    <option value="">Todas las cohortes</option>
+    ${cohorts
+      .map((cohort) => `
+        <option value="${escapeHTML(cohort)}">
+          ${escapeHTML(cohort)}
+        </option>
+      `)
+      .join("")}
+  `;
+
+  if (currentValue && cohorts.includes(currentValue)) {
+    cohortFilter.value = currentValue;
   }
+}
+
+function clearStudentFilters() {
+  const searchInput = document.getElementById("studentsSearchInput");
+  const statusFilter = document.getElementById("studentsStatusFilter");
+  const cohortFilter = document.getElementById("studentsCohortFilter");
+
+  if (searchInput) {
+    searchInput.value = "";
+  }
+
+  if (statusFilter) {
+    statusFilter.value = "";
+  }
+
+  if (cohortFilter) {
+    cohortFilter.value = "";
+  }
+
+  renderStudentsList(getFilteredStudents());
+}
 
   function renderStudentsList(students) {
     const list = document.getElementById("studentsList");
@@ -308,10 +415,10 @@
       const total = studentsCache.length;
       const visible = students.length;
 
-      countText.textContent =
-        total === visible
-          ? `${total} alumno${total === 1 ? "" : "s"} cargado${total === 1 ? "" : "s"}.`
-          : `${visible} de ${total} alumno${total === 1 ? "" : "s"}.`;
+    countText.textContent =
+      total === visible
+        ? `${total} alumno${total === 1 ? "" : "s"} cargado${total === 1 ? "" : "s"}.`
+        : `${visible} resultado${visible === 1 ? "" : "s"} de ${total} alumno${total === 1 ? "" : "s"}.`;
     }
 
     if (!students.length) {

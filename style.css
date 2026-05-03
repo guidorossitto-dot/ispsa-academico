@@ -1234,3 +1234,36 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ================================
+   Students filters
+================================ */
+
+.studentsListActions select {
+  min-width: 170px;
+  padding: 12px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.studentsListActions select:focus {
+  border-color: rgba(183, 207, 89, 0.55);
+  box-shadow: 0 0 0 4px rgba(183, 207, 89, 0.16);
+}
+
+.studentsListActions .secondaryBtn {
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .studentsListActions select {
+    width: 100%;
+    min-width: 0;
+  }
+}
