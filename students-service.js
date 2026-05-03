@@ -28,6 +28,8 @@
       dni: normalizeNullableText(student.dni),
       email: normalizeNullableText(student.email),
       phone: normalizeNullableText(student.phone),
+      program_name: normalizeNullableText(student.program_name),
+      cohort: normalizeNullableText(student.cohort),
       status: normalizeText(student.status) || "activo",
       notes: normalizeNullableText(student.notes)
     };
@@ -50,19 +52,21 @@
   }
 
   function getStudentSelectFields() {
-    return `
-      id,
-      first_name,
-      last_name,
-      dni,
-      email,
-      phone,
-      status,
-      notes,
-      created_at,
-      updated_at
-    `;
-  }
+  return `
+    id,
+    first_name,
+    last_name,
+    dni,
+    email,
+    phone,
+    program_name,
+    cohort,
+    status,
+    notes,
+    created_at,
+    updated_at
+  `;
+}
 
   async function listStudents() {
     const supabase = getClient();

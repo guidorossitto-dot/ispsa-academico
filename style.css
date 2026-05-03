@@ -1220,3 +1220,17 @@ button {
     gap: 3px;
   }
 }
+
+/* ================================
+   Student detail academic fields
+================================ */
+
+.studentDetailGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 960px) {
+  .studentDetailGrid {
+    grid-template-columns: 1fr;
+  }
+}

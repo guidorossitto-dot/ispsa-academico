@@ -76,19 +76,37 @@
           </label>
 
           <label>
-            Teléfono
-            <input type="text" name="phone" />
-          </label>
+  Teléfono
+  <input type="text" name="phone" />
+</label>
 
-          <label>
-            Estado
-            <select name="status">
-              <option value="activo">Activo</option>
-              <option value="pausado">Pausado</option>
-              <option value="egresado">Egresado</option>
-              <option value="baja">Baja</option>
-            </select>
-          </label>
+<label>
+  Carrera / Trayecto
+  <input
+    type="text"
+    name="program_name"
+    placeholder="Ej: Tecnicatura en Psicología Social"
+  />
+</label>
+
+      <label>
+        Cohorte / Año de ingreso
+        <input
+          type="text"
+          name="cohort"
+          placeholder="Ej: 2026"
+        />
+      </label>
+
+      <label>
+        Estado
+        <select name="status">
+          <option value="activo">Activo</option>
+          <option value="pausado">Pausado</option>
+          <option value="egresado">Egresado</option>
+          <option value="baja">Baja</option>
+        </select>
+      </label>
         </div>
 
         <label>
@@ -181,6 +199,8 @@
       dni: normalizeText(formData.get("dni")),
       email: normalizeText(formData.get("email")),
       phone: normalizeText(formData.get("phone")),
+      program_name: normalizeText(formData.get("program_name")),
+      cohort: normalizeText(formData.get("cohort")),
       status: normalizeText(formData.get("status")) || "activo",
       notes: normalizeText(formData.get("notes"))
     };
@@ -261,12 +281,14 @@
     }
 
     return studentsCache.filter((student) => {
-      const searchable = [
+          const searchable = [
         student.first_name,
         student.last_name,
         student.dni,
         student.email,
         student.phone,
+        student.program_name,
+        student.cohort,
         student.status
       ]
         .map((value) => String(value || "").toLowerCase())
@@ -405,13 +427,15 @@
 
     editingStudentId = student.id;
 
-    form.elements.first_name.value = student.first_name || "";
-    form.elements.last_name.value = student.last_name || "";
-    form.elements.dni.value = student.dni || "";
-    form.elements.email.value = student.email || "";
-    form.elements.phone.value = student.phone || "";
-    form.elements.status.value = student.status || "activo";
-    form.elements.notes.value = student.notes || "";
+      form.elements.first_name.value = student.first_name || "";
+      form.elements.last_name.value = student.last_name || "";
+      form.elements.dni.value = student.dni || "";
+      form.elements.email.value = student.email || "";
+      form.elements.phone.value = student.phone || "";
+      form.elements.program_name.value = student.program_name || "";
+      form.elements.cohort.value = student.cohort || "";
+      form.elements.status.value = student.status || "activo";
+      form.elements.notes.value = student.notes || "";
 
     if (title) {
       title.textContent = "Editar alumno";
@@ -544,6 +568,21 @@ function renderStudentDetail(student) {
           </div>
         </dl>
       </article>
+      <article class="studentDetailCard">
+  <h4>Datos académicos</h4>
+
+  <dl>
+    <div>
+      <dt>Carrera / Trayecto</dt>
+      <dd>${escapeHTML(student.program_name || "-")}</dd>
+    </div>
+
+    <div>
+      <dt>Cohorte / Año</dt>
+      <dd>${escapeHTML(student.cohort || "-")}</dd>
+    </div>
+  </dl>
+</article>
     </div>
 
     <article class="studentDetailCard studentDetailNotes">
