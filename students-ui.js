@@ -89,24 +89,89 @@
   />
 </label>
 
-      <label>
-        Cohorte / Año de ingreso
-        <input
-          type="text"
-          name="cohort"
-          placeholder="Ej: 2026"
-        />
-      </label>
+    <label>
+      Cohorte / Año de ingreso
+      <input
+        type="text"
+        name="cohort"
+        placeholder="Ej: 2026"
+      />
+    </label>
 
-      <label>
-        Estado
-        <select name="status">
-          <option value="activo">Activo</option>
-          <option value="pausado">Pausado</option>
-          <option value="egresado">Egresado</option>
-          <option value="baja">Baja</option>
-        </select>
-      </label>
+    <label>
+      Fecha de nacimiento
+      <input type="date" name="birth_date" />
+    </label>
+
+    <label>
+      Domicilio
+      <input
+        type="text"
+        name="address"
+        placeholder="Calle, número, piso/depto"
+      />
+    </label>
+
+    <label>
+      Localidad
+      <input
+        type="text"
+        name="city"
+        placeholder="Ej: CABA, Avellaneda, Quilmes"
+      />
+    </label>
+
+    <label>
+      Nº de legajo
+      <input
+        type="text"
+        name="file_number"
+        placeholder="Ej: 2026-001"
+      />
+    </label>
+
+    <label>
+      Fecha de inscripción
+      <input type="date" name="enrollment_date" />
+    </label>
+
+    <label>
+      Estado de documentación
+      <select name="documentation_status">
+        <option value="pendiente">Pendiente</option>
+        <option value="parcial">Parcial</option>
+        <option value="completa">Completa</option>
+        <option value="no_aplica">No aplica</option>
+      </select>
+    </label>
+
+    <label>
+      Contacto de emergencia
+      <input
+        type="text"
+        name="emergency_contact_name"
+        placeholder="Nombre y vínculo"
+      />
+    </label>
+
+    <label>
+      Teléfono de emergencia
+      <input
+        type="text"
+        name="emergency_contact_phone"
+        placeholder="Teléfono de contacto"
+      />
+    </label>
+
+    <label>
+      Estado
+      <select name="status">
+        <option value="activo">Activo</option>
+        <option value="pausado">Pausado</option>
+        <option value="egresado">Egresado</option>
+        <option value="baja">Baja</option>
+      </select>
+    </label>
         </div>
 
         <label>
@@ -235,8 +300,21 @@
       dni: normalizeText(formData.get("dni")),
       email: normalizeText(formData.get("email")),
       phone: normalizeText(formData.get("phone")),
+
       program_name: normalizeText(formData.get("program_name")),
       cohort: normalizeText(formData.get("cohort")),
+
+      birth_date: normalizeText(formData.get("birth_date")),
+      address: normalizeText(formData.get("address")),
+      city: normalizeText(formData.get("city")),
+      emergency_contact_name: normalizeText(formData.get("emergency_contact_name")),
+      emergency_contact_phone: normalizeText(formData.get("emergency_contact_phone")),
+
+      enrollment_date: normalizeText(formData.get("enrollment_date")),
+      file_number: normalizeText(formData.get("file_number")),
+      documentation_status:
+        normalizeText(formData.get("documentation_status")) || "pendiente",
+
       status: normalizeText(formData.get("status")) || "activo",
       notes: normalizeText(formData.get("notes"))
     };
@@ -342,6 +420,14 @@
       student.phone,
       student.program_name,
       student.cohort,
+      student.birth_date,
+      student.address,
+      student.city,
+      student.emergency_contact_name,
+      student.emergency_contact_phone,
+      student.enrollment_date,
+      student.file_number,
+      student.documentation_status,
       student.status
     ]
       .map((value) => String(value || "").toLowerCase())
@@ -534,15 +620,30 @@ function clearStudentFilters() {
 
     editingStudentId = student.id;
 
-      form.elements.first_name.value = student.first_name || "";
-      form.elements.last_name.value = student.last_name || "";
-      form.elements.dni.value = student.dni || "";
-      form.elements.email.value = student.email || "";
-      form.elements.phone.value = student.phone || "";
-      form.elements.program_name.value = student.program_name || "";
-      form.elements.cohort.value = student.cohort || "";
-      form.elements.status.value = student.status || "activo";
-      form.elements.notes.value = student.notes || "";
+    form.elements.first_name.value = student.first_name || "";
+    form.elements.last_name.value = student.last_name || "";
+    form.elements.dni.value = student.dni || "";
+    form.elements.email.value = student.email || "";
+    form.elements.phone.value = student.phone || "";
+
+    form.elements.program_name.value = student.program_name || "";
+    form.elements.cohort.value = student.cohort || "";
+
+    form.elements.birth_date.value = student.birth_date || "";
+    form.elements.address.value = student.address || "";
+    form.elements.city.value = student.city || "";
+    form.elements.emergency_contact_name.value =
+      student.emergency_contact_name || "";
+    form.elements.emergency_contact_phone.value =
+      student.emergency_contact_phone || "";
+
+    form.elements.enrollment_date.value = student.enrollment_date || "";
+    form.elements.file_number.value = student.file_number || "";
+    form.elements.documentation_status.value =
+      student.documentation_status || "pendiente";
+
+    form.elements.status.value = student.status || "activo";
+    form.elements.notes.value = student.notes || "";
 
     if (title) {
       title.textContent = "Editar alumno";
@@ -583,6 +684,32 @@ function clearStudentFilters() {
   }
 }
 
+function formatDateOnly(value) {
+  if (!value) return "-";
+
+  const dateText = String(value).slice(0, 10);
+  const parts = dateText.split("-");
+
+  if (parts.length !== 3) return "-";
+
+  const [year, month, day] = parts;
+
+  return `${day}/${month}/${year}`;
+}
+
+function formatDocumentationStatus(value) {
+  const status = String(value || "pendiente");
+
+  const labels = {
+    pendiente: "Pendiente",
+    parcial: "Parcial",
+    completa: "Completa",
+    no_aplica: "No aplica"
+  };
+
+  return labels[status] || status;
+}
+
 function formatMultilineText(value) {
   const text = String(value || "").trim();
 
@@ -620,7 +747,7 @@ function renderStudentDetail(student) {
     </div>
 
     <div class="studentDetailGrid">
-      <article class="studentDetailCard">
+      <article class="studentDetailCard studentDetailCard--wide">
         <h4>Datos personales</h4>
 
         <dl>
@@ -640,6 +767,11 @@ function renderStudentDetail(student) {
           </div>
 
           <div>
+            <dt>Fecha de nacimiento</dt>
+            <dd>${escapeHTML(formatDateOnly(student.birth_date))}</dd>
+          </div>
+
+          <div>
             <dt>Email</dt>
             <dd>${escapeHTML(student.email || "-")}</dd>
           </div>
@@ -647,6 +779,16 @@ function renderStudentDetail(student) {
           <div>
             <dt>Teléfono</dt>
             <dd>${escapeHTML(student.phone || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Domicilio</dt>
+            <dd>${escapeHTML(student.address || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Localidad</dt>
+            <dd>${escapeHTML(student.city || "-")}</dd>
           </div>
         </dl>
       </article>
@@ -665,6 +807,21 @@ function renderStudentDetail(student) {
           </div>
 
           <div>
+            <dt>Nº de legajo</dt>
+            <dd>${escapeHTML(student.file_number || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Fecha de inscripción</dt>
+            <dd>${escapeHTML(formatDateOnly(student.enrollment_date))}</dd>
+          </div>
+
+          <div>
+            <dt>Documentación</dt>
+            <dd>${escapeHTML(formatDocumentationStatus(student.documentation_status))}</dd>
+          </div>
+
+          <div>
             <dt>Fecha de alta</dt>
             <dd>${escapeHTML(formatDateTime(student.created_at))}</dd>
           </div>
@@ -675,21 +832,38 @@ function renderStudentDetail(student) {
           </div>
         </dl>
       </article>
+
       <article class="studentDetailCard">
-  <h4>Datos académicos</h4>
+        <h4>Datos académicos</h4>
 
-  <dl>
-    <div>
-      <dt>Carrera / Trayecto</dt>
-      <dd>${escapeHTML(student.program_name || "-")}</dd>
-    </div>
+        <dl>
+          <div>
+            <dt>Carrera / Trayecto</dt>
+            <dd>${escapeHTML(student.program_name || "-")}</dd>
+          </div>
 
-    <div>
-      <dt>Cohorte / Año</dt>
-      <dd>${escapeHTML(student.cohort || "-")}</dd>
-    </div>
-  </dl>
-</article>
+          <div>
+            <dt>Cohorte / Año</dt>
+            <dd>${escapeHTML(student.cohort || "-")}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="studentDetailCard">
+        <h4>Contacto de emergencia</h4>
+
+        <dl>
+          <div>
+            <dt>Contacto</dt>
+            <dd>${escapeHTML(student.emergency_contact_name || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Teléfono</dt>
+            <dd>${escapeHTML(student.emergency_contact_phone || "-")}</dd>
+          </div>
+        </dl>
+      </article>
     </div>
 
     <article class="studentDetailCard studentDetailNotes">

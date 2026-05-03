@@ -22,18 +22,31 @@
   }
 
   function normalizeStudentPayload(student = {}) {
-    return {
-      first_name: normalizeText(student.first_name),
-      last_name: normalizeText(student.last_name),
-      dni: normalizeNullableText(student.dni),
-      email: normalizeNullableText(student.email),
-      phone: normalizeNullableText(student.phone),
-      program_name: normalizeNullableText(student.program_name),
-      cohort: normalizeNullableText(student.cohort),
-      status: normalizeText(student.status) || "activo",
-      notes: normalizeNullableText(student.notes)
-    };
-  }
+  return {
+    first_name: normalizeText(student.first_name),
+    last_name: normalizeText(student.last_name),
+    dni: normalizeNullableText(student.dni),
+    email: normalizeNullableText(student.email),
+    phone: normalizeNullableText(student.phone),
+
+    program_name: normalizeNullableText(student.program_name),
+    cohort: normalizeNullableText(student.cohort),
+
+    birth_date: normalizeNullableText(student.birth_date),
+    address: normalizeNullableText(student.address),
+    city: normalizeNullableText(student.city),
+    emergency_contact_name: normalizeNullableText(student.emergency_contact_name),
+    emergency_contact_phone: normalizeNullableText(student.emergency_contact_phone),
+
+    enrollment_date: normalizeNullableText(student.enrollment_date),
+    file_number: normalizeNullableText(student.file_number),
+    documentation_status:
+      normalizeText(student.documentation_status) || "pendiente",
+
+    status: normalizeText(student.status) || "activo",
+    notes: normalizeNullableText(student.notes)
+  };
+}
 
   function validateStudentPayload(payload) {
     if (!payload.first_name) {
@@ -61,6 +74,14 @@
     phone,
     program_name,
     cohort,
+    birth_date,
+    address,
+    city,
+    emergency_contact_name,
+    emergency_contact_phone,
+    enrollment_date,
+    file_number,
+    documentation_status,
     status,
     notes,
     created_at,

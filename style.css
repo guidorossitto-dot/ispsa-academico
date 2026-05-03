@@ -1267,3 +1267,91 @@ button {
     min-width: 0;
   }
 }
+
+/* ================================
+   Student detail extended cards
+================================ */
+
+.studentDetailGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 1180px) {
+  .studentDetailGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .studentDetailGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================================
+   Student detail layout refinement
+================================ */
+
+.studentDetailCard--wide {
+  grid-column: span 2;
+}
+
+@media (min-width: 1180px) {
+  .studentDetailGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .studentDetailCard--wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 960px) {
+  .studentDetailCard--wide {
+    grid-column: span 1;
+  }
+}
+
+/* ================================
+   Student detail: 4 cards in one row
+================================ */
+
+.studentDetailGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.studentDetailCard--wide {
+  grid-column: span 1;
+}
+
+.studentDetailCard {
+  min-width: 0;
+}
+
+.studentDetailCard dl div {
+  grid-template-columns: 1fr;
+  gap: 3px;
+}
+
+.studentDetailCard dt {
+  font-size: 12px;
+}
+
+.studentDetailCard dd {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1180px) {
+  .studentDetailGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .studentDetailGrid {
+    grid-template-columns: 1fr;
+  }
+}
