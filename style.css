@@ -110,7 +110,7 @@ button {
   color: var(--text);
   text-decoration: none;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   background: var(--surface-soft);
   border: 1px solid transparent;
 }
@@ -178,7 +178,7 @@ button {
   margin: 0;
   color: var(--primary-dark);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -221,7 +221,7 @@ button {
   margin-bottom: 16px;
   color: var(--accent);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .heroFeatures strong {
@@ -258,7 +258,7 @@ button {
   margin: 0 0 8px;
   color: var(--primary-dark);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -279,7 +279,7 @@ button {
   gap: 8px;
   color: var(--text);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .loginForm input {
@@ -304,7 +304,7 @@ button {
   padding: 14px 18px;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .loginForm button:hover,
@@ -329,7 +329,7 @@ button {
   margin: 0 0 12px;
   color: var(--muted);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .demoButtons {
@@ -345,7 +345,7 @@ button {
   background: var(--surface-soft);
   color: var(--text);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .demoButtons button:hover {
@@ -418,7 +418,7 @@ button {
   color: white;
   text-decoration: none;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   border: 0;
 }
@@ -484,7 +484,7 @@ button {
   margin-bottom: 18px;
   color: var(--accent);
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .adminModuleCard h2 {
@@ -509,7 +509,7 @@ button {
   padding: 12px 14px;
   background: var(--surface-soft);
   color: var(--text);
-  font-weight: 800;
+  font-weight: 600;
   border: 1px solid var(--border);
 }
 
@@ -670,7 +670,7 @@ button {
   gap: 7px;
   color: var(--text);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .studentForm input,
@@ -710,7 +710,7 @@ button {
   padding: 12px 15px;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .formStatus {
@@ -761,7 +761,7 @@ button {
   border: 0;
   color: var(--muted);
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -774,7 +774,7 @@ button {
   background: rgba(183, 207, 89, 0.18);
   color: var(--primary-dark);
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 600;
 }
 /* Corrección mobile para listado de alumnos */
 .studentsList,
@@ -844,7 +844,7 @@ button {
   padding: 12px 14px;
   background: var(--surface-soft);
   color: var(--text);
-  font-weight: 800;
+  font-weight: 600;
   border: 1px solid var(--border);
   text-decoration: none;
   font-size: 14px;
@@ -939,7 +939,7 @@ button {
   background: var(--surface-soft);
   color: var(--text);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .studentsRowActions button:hover {
@@ -1075,9 +1075,148 @@ button {
 
 /* Si querés que la tabla se sienta menos pesada */
 .studentsTableHead {
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .studentsTableRow {
   font-size: 14px;
+}
+
+/* ================================
+   Student detail panel
+================================ */
+
+.studentDetailPanel {
+  margin: 22px 0;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.studentDetailHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.studentDetailHeader h3 {
+  margin: 4px 0 6px;
+  font-size: 26px;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+
+.studentDetailHeader p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.studentDetailActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.studentDetailActions button {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.studentDetailActions button:hover {
+  border-color: rgba(183, 207, 89, 0.45);
+  color: var(--primary-dark);
+}
+
+.studentDetailGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 14px;
+}
+
+.studentDetailCard {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+}
+
+.studentDetailCard h4 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.studentDetailCard dl {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.studentDetailCard dl div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.studentDetailCard dt {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.studentDetailCard dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.studentDetailNotes {
+  margin-top: 14px;
+}
+
+.studentDetailNotes p {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.studentDetailNotes em {
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .studentDetailHeader {
+    flex-direction: column;
+  }
+
+  .studentDetailActions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .studentDetailActions button {
+    flex: 1;
+  }
+
+  .studentDetailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .studentDetailCard dl div {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
 }

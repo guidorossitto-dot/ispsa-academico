@@ -105,6 +105,8 @@
         </div>
       </form>
 
+      <section id="studentDetailPanel" class="studentDetailPanel" hidden></section>
+
       <div class="studentsListHeader">
         <div>
           <h3>Listado de alumnos</h3>
@@ -137,6 +139,7 @@
     const searchInput = document.getElementById("studentsSearchInput");
     const cancelEditBtn = document.getElementById("cancelEditStudentBtn");
     const list = document.getElementById("studentsList");
+    const detailPanel = document.getElementById("studentDetailPanel");
 
     if (form) {
       form.addEventListener("submit", handleSubmitStudent);
@@ -158,6 +161,10 @@
 
     if (list) {
       list.addEventListener("click", handleStudentsListClick);
+    }
+
+    if (detailPanel) {
+      detailPanel.addEventListener("click", handleStudentDetailClick);
     }
   }
 
@@ -327,7 +334,8 @@
           ${escapeHTML(status)}
         </strong>
       </span>
-      <span class="studentsRowActions">
+            <span class="studentsRowActions">
+        <button type="button" data-student-action="details">Ficha</button>
         <button type="button" data-student-action="edit">Editar</button>
 
         ${
@@ -357,6 +365,11 @@
 
     if (!student) {
       alert("No se encontró el alumno seleccionado.");
+      return;
+    }
+
+    if (action === "details") {
+      renderStudentDetail(student);
       return;
     }
 
@@ -422,6 +435,158 @@
 
     form.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+
+  function formatDateTime(value) {
+  if (!value) return "-";
+
+  try {
+    return new Intl.DateTimeFormat("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date(value));
+  } catch (error) {
+    return "-";
+  }
+}
+
+function formatMultilineText(value) {
+  const text = String(value || "").trim();
+
+  if (!text) {
+    return "<em>Sin observaciones cargadas.</em>";
+  }
+
+  return escapeHTML(text).replaceAll("\n", "<br>");
+}
+
+function renderStudentDetail(student) {
+  const panel = document.getElementById("studentDetailPanel");
+
+  if (!panel) return;
+
+  const fullName = `${student.first_name || ""} ${student.last_name || ""}`.trim();
+  const status = student.status || "activo";
+
+  panel.hidden = false;
+
+  panel.innerHTML = `
+    <div class="studentDetailHeader">
+      <div>
+        <p class="dashboardEyebrow">Ficha individual</p>
+        <h3>${escapeHTML(fullName || "Alumno sin nombre")}</h3>
+        <p>
+          Consulta rápida de datos administrativos y observaciones internas.
+        </p>
+      </div>
+
+      <div class="studentDetailActions">
+        <button type="button" data-student-detail-action="edit">Editar ficha</button>
+        <button type="button" data-student-detail-action="close" class="secondaryBtn">Cerrar</button>
+      </div>
+    </div>
+
+    <div class="studentDetailGrid">
+      <article class="studentDetailCard">
+        <h4>Datos personales</h4>
+
+        <dl>
+          <div>
+            <dt>Apellido</dt>
+            <dd>${escapeHTML(student.last_name || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Nombre</dt>
+            <dd>${escapeHTML(student.first_name || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>DNI</dt>
+            <dd>${escapeHTML(student.dni || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Email</dt>
+            <dd>${escapeHTML(student.email || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Teléfono</dt>
+            <dd>${escapeHTML(student.phone || "-")}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="studentDetailCard">
+        <h4>Estado administrativo</h4>
+
+        <dl>
+          <div>
+            <dt>Estado</dt>
+            <dd>
+              <strong class="statusPill statusPill--${escapeHTML(status)}">
+                ${escapeHTML(status)}
+              </strong>
+            </dd>
+          </div>
+
+          <div>
+            <dt>Fecha de alta</dt>
+            <dd>${escapeHTML(formatDateTime(student.created_at))}</dd>
+          </div>
+
+          <div>
+            <dt>Última modificación</dt>
+            <dd>${escapeHTML(formatDateTime(student.updated_at))}</dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+
+    <article class="studentDetailCard studentDetailNotes">
+      <h4>Observaciones</h4>
+      <p>${formatMultilineText(student.notes)}</p>
+    </article>
+  `;
+
+  panel.dataset.currentStudentId = student.id;
+
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function handleStudentDetailClick(event) {
+  const button = event.target.closest("[data-student-detail-action]");
+
+  if (!button) return;
+
+  const action = button.dataset.studentDetailAction;
+  const panel = document.getElementById("studentDetailPanel");
+  const studentId = panel?.dataset?.currentStudentId;
+
+  if (action === "close") {
+    if (panel) {
+      panel.hidden = true;
+      panel.innerHTML = "";
+      delete panel.dataset.currentStudentId;
+    }
+
+    return;
+  }
+
+  if (action === "edit") {
+    const student = studentsCache.find((item) => item.id === studentId);
+
+    if (!student) {
+      alert("No se encontró el alumno seleccionado.");
+      return;
+    }
+
+    startEditStudent(student);
+  }
+}
 
   function resetStudentForm() {
     const form = document.getElementById("studentForm");
