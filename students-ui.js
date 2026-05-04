@@ -284,6 +284,7 @@
 
     if (detailPanel) {
       detailPanel.addEventListener("click", handleStudentDetailClick);
+      detailPanel.addEventListener("click", handleStudentDocumentClick);
     }
   }
 
@@ -867,15 +868,77 @@ function renderStudentDetail(student) {
       </article>
     </div>
 
+    <article class="studentDetailCard studentDetailNotes studentDocumentsCard">
+  <div class="documentsHeader">
+    <div>
+      <h4>Documentación del alumno</h4>
+      <p>Subí y consultá archivos del legajo del estudiante.</p>
+    </div>
+  </div>
+
+  <form id="studentDocumentForm" class="documentUploadForm">
+    <div class="documentsGrid">
+      <label>
+        Tipo de documento
+        <select name="document_type" required>
+          ${renderDocumentTypeOptions("student")}
+        </select>
+      </label>
+
+      <label>
+        Archivo
+        <input
+          type="file"
+          name="document_file"
+          accept=".pdf,image/jpeg,image/png,image/webp"
+          required
+        />
+      </label>
+
+      <label>
+        Título / descripción breve
+        <input
+          type="text"
+          name="title"
+          placeholder="Ej: DNI, título secundario, ficha firmada"
+        />
+      </label>
+    </div>
+
+    <label>
+      Observaciones del documento
+      <textarea
+        name="notes"
+        rows="2"
+        placeholder="Opcional"
+      ></textarea>
+    </label>
+
+    <div class="formActions">
+      <button id="studentDocumentSubmitBtn" type="submit">
+        Subir documento
+      </button>
+      <p id="studentDocumentStatus" class="formStatus"></p>
+    </div>
+  </form>
+
+  <div id="studentDocumentsList" class="documentsList">
+    <p class="adminWorkspaceEmpty">Cargando documentación...</p>
+  </div>
+</article>
+
     <article class="studentDetailCard studentDetailNotes">
       <h4>Observaciones</h4>
       <p>${formatMultilineText(student.notes)}</p>
     </article>
   `;
 
-  panel.dataset.currentStudentId = student.id;
+    panel.dataset.currentStudentId = student.id;
 
-  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    bindStudentDocumentForm(student.id);
+    loadStudentDocuments(student.id);
+
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function handleStudentDetailClick(event) {
@@ -925,6 +988,238 @@ function printStudentDetail() {
   document.body.classList.add("isPrintingStudentDetail");
 
   window.print();
+}
+
+function renderDocumentTypeOptions(personType) {
+  if (!App.documentsService) {
+    console.warn("App.documentsService no está disponible. Revisar carga de documents-service.js.");
+
+    return `
+      <option value="" disabled selected>
+        Documentos no disponibles
+      </option>
+    `;
+  }
+
+  const types = App.documentsService.getDocumentTypes(personType);
+
+  if (!types.length) {
+    return `
+      <option value="" disabled selected>
+        No hay tipos de documento configurados
+      </option>
+    `;
+  }
+
+  return types
+    .map((item) => `
+      <option value="${escapeHTML(item.value)}">
+        ${escapeHTML(item.label)}
+      </option>
+    `)
+    .join("");
+}
+
+function bindStudentDocumentForm(studentId) {
+  const form = document.getElementById("studentDocumentForm");
+
+  if (!form) return;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const status = document.getElementById("studentDocumentStatus");
+    const submitBtn = document.getElementById("studentDocumentSubmitBtn");
+    const formData = new FormData(form);
+    const file = formData.get("document_file");
+
+    try {
+      if (!App.documentsService) {
+        throw new Error("El servicio de documentos no está disponible.");
+      }
+
+      setStatus(status, "Subiendo documento...");
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+      }
+
+      await App.documentsService.uploadDocument({
+        personType: "student",
+        personId: studentId,
+        documentType: normalizeText(formData.get("document_type")),
+        title: normalizeText(formData.get("title")),
+        notes: normalizeText(formData.get("notes")),
+        file
+      });
+
+      form.reset();
+      setStatus(status, "Documento subido correctamente.");
+
+      await loadStudentDocuments(studentId);
+    } catch (error) {
+      console.error(error);
+      setStatus(status, getFriendlyErrorMessage(error), true);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+      }
+    }
+  });
+}
+
+async function loadStudentDocuments(studentId) {
+  const list = document.getElementById("studentDocumentsList");
+
+  if (!list) return;
+
+  try {
+    if (!App.documentsService) {
+      throw new Error("El servicio de documentos no está disponible.");
+    }
+
+    list.innerHTML = `<p class="adminWorkspaceEmpty">Cargando documentación...</p>`;
+
+    const documents = await App.documentsService.listDocuments("student", studentId);
+
+    renderStudentDocumentsList(documents);
+  } catch (error) {
+    console.error(error);
+
+    list.innerHTML = `
+      <p class="adminWorkspaceEmpty errorText">
+        No se pudo cargar la documentación: ${escapeHTML(error.message)}
+      </p>
+    `;
+  }
+}
+
+function renderStudentDocumentsList(documents) {
+  const list = document.getElementById("studentDocumentsList");
+
+  if (!list) return;
+
+  if (!documents.length) {
+    list.innerHTML = `
+      <p class="adminWorkspaceEmpty">
+        Todavía no hay documentación cargada.
+      </p>
+    `;
+    return;
+  }
+
+  list.innerHTML = `
+    <div class="documentsItems">
+      ${documents.map(renderStudentDocumentItem).join("")}
+    </div>
+  `;
+}
+
+function renderStudentDocumentItem(studentDocument) {
+  const typeLabel = App.documentsService
+    ? App.documentsService.getDocumentTypeLabel("student", studentDocument.document_type)
+    : studentDocument.document_type;
+
+  return `
+    <article class="documentItem" data-document-id="${escapeHTML(studentDocument.id)}">
+      <div>
+        <strong>${escapeHTML(typeLabel)}</strong>
+        <span>${escapeHTML(studentDocument.title || studentDocument.file_name || "Documento")}</span>
+        <small>
+          ${escapeHTML(formatDateTime(studentDocument.created_at))}
+          ${studentDocument.file_size ? ` · ${escapeHTML(formatFileSize(studentDocument.file_size))}` : ""}
+        </small>
+      </div>
+
+      <div class="documentItemActions">
+        <button type="button" data-document-action="open">
+          Abrir
+        </button>
+        <button type="button" data-document-action="delete" class="dangerBtn">
+          Borrar
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function formatFileSize(size) {
+  const bytes = Number(size || 0);
+
+  if (!bytes) return "-";
+
+  if (bytes < 1024 * 1024) {
+    return `${Math.round(bytes / 1024)} KB`;
+  }
+
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+async function handleStudentDocumentClick(event) {
+  const button = event.target.closest("[data-document-action]");
+
+  if (!button) return;
+
+  const item = button.closest("[data-document-id]");
+  const documentId = item?.dataset.documentId;
+  const action = button.dataset.documentAction;
+
+  if (!documentId || !action) return;
+
+  const panel = window.document.getElementById("studentDetailPanel");
+  const studentId = panel?.dataset?.currentStudentId;
+
+  if (action === "open") {
+    await openStudentDocument(documentId);
+    return;
+  }
+
+  if (action === "delete") {
+    await deleteStudentDocument(documentId, studentId);
+  }
+}
+
+async function openStudentDocument(documentId) {
+  try {
+    const panel = window.document.getElementById("studentDetailPanel");
+    const studentId = panel?.dataset?.currentStudentId;
+
+    if (!studentId) {
+      throw new Error("No se encontró el alumno actual.");
+    }
+
+    const documents = await App.documentsService.listDocuments("student", studentId);
+    const selectedDocument = documents.find((item) => item.id === documentId);
+
+    if (!selectedDocument) {
+      throw new Error("No se encontró el documento.");
+    }
+
+    const signedUrl = await App.documentsService.createSignedUrl(
+      selectedDocument.file_path
+    );
+
+    window.open(signedUrl, "_blank", "noopener,noreferrer");
+  } catch (error) {
+    console.error(error);
+    alert(getFriendlyErrorMessage(error));
+  }
+}
+
+async function deleteStudentDocument(documentId, studentId) {
+  const confirmed = confirm(
+    "Esto va a borrar el documento del legajo.\n\n¿Querés continuar?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await App.documentsService.deleteDocument(documentId);
+    await loadStudentDocuments(studentId);
+  } catch (error) {
+    console.error(error);
+    alert(getFriendlyErrorMessage(error));
+  }
 }
 
   function resetStudentForm() {

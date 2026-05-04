@@ -1594,3 +1594,18 @@ button {
     flex: 1;
   }
 }
+
+/* ================================
+   Student documents
+================================ */
+
+.studentDocumentsCard {
+  margin-top: 14px;
+}
+
+@media print {
+  body.isPrintingStudentDetail .documentUploadForm,
+  body.isPrintingStudentDetail .documentItemActions {
+    display: none !important;
+  }
+}
