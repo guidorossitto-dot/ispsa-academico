@@ -1679,3 +1679,187 @@ button {
   background: rgba(158, 212, 230, 0.22);
   color: #31758a;
 }
+
+/* ================================
+   Enrollment status
+================================ */
+
+.statusPill--inscripto {
+  background: rgba(183, 207, 89, 0.18);
+  color: var(--primary-dark);
+}
+
+.statusPill--regular {
+  background: rgba(158, 212, 230, 0.22);
+  color: #31758a;
+}
+
+.statusPill--libre {
+  background: rgba(216, 161, 93, 0.16);
+  color: #9a641f;
+}
+
+.statusPill--aprobado {
+  background: rgba(183, 207, 89, 0.22);
+  color: var(--primary-dark);
+}
+
+/* ================================
+   Enrollments grouped by student
+================================ */
+
+.enrollmentsAccordion {
+  display: grid;
+  gap: 12px;
+}
+
+.enrollmentStudentGroup {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.enrollmentStudentGroup summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 16px;
+  cursor: pointer;
+  list-style: none;
+  background: var(--surface-soft);
+}
+
+.enrollmentStudentGroup summary::-webkit-details-marker {
+  display: none;
+}
+
+.enrollmentStudentGroup summary::after {
+  content: "▾";
+  color: var(--muted);
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.enrollmentStudentGroup:not([open]) summary::after {
+  transform: rotate(-90deg);
+}
+
+.enrollmentStudentSummaryMain {
+  display: grid;
+  gap: 3px;
+}
+
+.enrollmentStudentSummaryMain strong {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.enrollmentStudentSummaryMain span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.enrollmentStudentSummaryMeta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.enrollmentStudentSummaryMeta span {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: var(--muted);
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.enrollmentStudentItems {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.enrollmentItem {
+  display: grid;
+  grid-template-columns: 1.4fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.enrollmentItemMain {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.enrollmentItemMain strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.enrollmentItemMain span,
+.enrollmentItemMain small {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.enrollmentItemStatus {
+  display: flex;
+  justify-content: center;
+}
+
+.enrollmentItemActions {
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .enrollmentStudentGroup summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .enrollmentStudentSummaryMeta {
+    margin-left: 0;
+  }
+
+  .enrollmentItem {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .enrollmentItemStatus {
+    justify-content: flex-start;
+  }
+
+  .enrollmentItemActions {
+    justify-content: stretch;
+  }
+
+  .enrollmentItemActions button {
+    flex: 1;
+  }
+}
+
+/* ================================
+   Enrollments view mode
+================================ */
+
+.enrollmentsAccordion--course .enrollmentStudentGroup summary {
+  background: #fcfcf8;
+}
+
+.enrollmentCourseGroup .enrollmentStudentSummaryMain strong::before {
+  content: "📚 ";
+}

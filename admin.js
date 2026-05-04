@@ -81,6 +81,13 @@
       );
       return;
     }
+
+    if (page === "enrollments") {
+      setWelcome(
+        `Bienvenido/a, ${name}. Desde acá podés administrar inscripciones de alumnos a cursadas y comisiones.`
+      );
+      return;
+    }
   }
 
   async function handleLogout() {
@@ -120,7 +127,11 @@
         return;
         }
 
-      });
+        if (moduleName === "enrollments") {
+        window.location.href = "./enrollments.html";
+        return;
+      }
+     });
     });
   }
 
@@ -164,6 +175,16 @@ function renderCurrentPageModule() {
     }
 
     window.App.coursesUI.renderCoursesModule();
+    return;
+  }
+
+    if (page === "enrollments") {
+    if (!window.App?.enrollmentsUI) {
+      alert("El módulo de inscripciones no está disponible.");
+      return;
+    }
+
+    window.App.enrollmentsUI.renderEnrollmentsModule();
     return;
   }
 }
