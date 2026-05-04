@@ -1863,3 +1863,18 @@ button {
 .enrollmentCourseGroup .enrollmentStudentSummaryMain strong::before {
   content: "📚 ";
 }
+/* ================================
+   Public enrollment page
+================================ */
+
+.publicEnrollmentShell {
+  max-width: 980px;
+}
+
+.publicEnrollmentShell .adminWorkspace {
+  margin-top: 20px;
+}
+
+.publicEnrollmentShell .studentForm {
+  margin-top: 0;
+}

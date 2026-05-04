@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Preinscripción | ISPSA</title>
+
+  <link rel="stylesheet" href="./style.css?v=26" />
+</head>
+
+<body>
+  <header class="siteHeader">
+    <div class="siteHeaderBrand">
+      <img
+        src="./assets/logo-ispsa.png"
+        alt="Logo ISPSA"
+        class="siteHeaderLogo"
+      />
+
+      <div>
+        <strong>ISPSA</strong>
+        <span>Formulario de inscripción académica</span>
+      </div>
+    </div>
+
+    <nav class="siteHeaderNav" aria-label="Navegación principal">
+      <a href="./index.html">Inicio</a>
+    </nav>
+  </header>
+
+  <main class="adminShell publicEnrollmentShell">
+    <section class="adminHero">
+      <div>
+        <p class="dashboardEyebrow">Inscripción online</p>
+        <h1>Formulario de preinscripción</h1>
+        <p class="adminHeroText">
+          Completá tus datos y seleccioná la cursada a la que querés inscribirte.
+        </p>
+      </div>
+    </section>
+
+    <section class="adminWorkspace">
+      <form id="publicEnrollmentForm" class="studentForm">
+        <div class="studentFormTop">
+          <div>
+            <h3>Datos del alumno/a</h3>
+            <p>
+              Usá tus datos reales. El DNI permite evitar inscripciones duplicadas.
+            </p>
+          </div>
+        </div>
+
+        <div class="formGrid">
+          <label>
+            Nombre *
+            <input type="text" name="first_name" required />
+          </label>
+
+          <label>
+            Apellido *
+            <input type="text" name="last_name" required />
+          </label>
+
+          <label>
+            DNI *
+            <input
+              type="text"
+              name="dni"
+              required
+              inputmode="numeric"
+              placeholder="Solo números"
+            />
+          </label>
+
+          <label>
+            Email
+            <input type="email" name="email" />
+          </label>
+
+          <label>
+            Teléfono
+            <input type="text" name="phone" />
+          </label>
+
+          <label>
+            Cursada / Comisión *
+            <select name="course_id" id="publicCourseSelect" required>
+              <option value="">Cargando cursadas...</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          Observaciones
+          <textarea
+            name="notes"
+            rows="3"
+            placeholder="Opcional. Por ejemplo, aclaraciones para secretaría."
+          ></textarea>
+        </label>
+
+        <div class="formActions">
+          <button id="publicEnrollmentSubmitBtn" type="submit">
+            Enviar inscripción
+          </button>
+          <p id="publicEnrollmentStatus" class="formStatus"></p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-client.js?v=5"></script>
+  <script src="./preinscripcion.js?v=1"></script>
+</body>
+</html>
