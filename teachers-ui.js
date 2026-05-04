@@ -931,6 +931,8 @@ function renderTeacherDocumentsList(documents) {
 }
 
 async function openTeacherDocument(documentId) {
+  const newTab = window.open("about:blank", "_blank");
+
   try {
     const panel = window.document.getElementById("teacherDetailPanel");
     const teacherId = panel?.dataset?.currentTeacherId;
@@ -950,9 +952,19 @@ async function openTeacherDocument(documentId) {
       selectedDocument.file_path
     );
 
-    window.open(signedUrl, "_blank", "noopener,noreferrer");
+    if (newTab) {
+      newTab.location.href = signedUrl;
+      return;
+    }
+
+    window.location.href = signedUrl;
   } catch (error) {
     console.error(error);
+
+    if (newTab) {
+      newTab.close();
+    }
+
     alert(getFriendlyErrorMessage(error));
   }
 }

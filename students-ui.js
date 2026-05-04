@@ -1180,6 +1180,8 @@ async function handleStudentDocumentClick(event) {
 }
 
 async function openStudentDocument(documentId) {
+  const newTab = window.open("about:blank", "_blank");
+
   try {
     const panel = window.document.getElementById("studentDetailPanel");
     const studentId = panel?.dataset?.currentStudentId;
@@ -1199,9 +1201,19 @@ async function openStudentDocument(documentId) {
       selectedDocument.file_path
     );
 
-    window.open(signedUrl, "_blank", "noopener,noreferrer");
+    if (newTab) {
+      newTab.location.href = signedUrl;
+      return;
+    }
+
+    window.location.href = signedUrl;
   } catch (error) {
     console.error(error);
+
+    if (newTab) {
+      newTab.close();
+    }
+
     alert(getFriendlyErrorMessage(error));
   }
 }
