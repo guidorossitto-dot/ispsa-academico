@@ -1437,3 +1437,160 @@ button {
     color: #111111 !important;
   }
 }
+
+/* ================================
+   Documents / legajo
+================================ */
+
+.teacherDocumentsCard {
+  margin-top: 14px;
+}
+
+.documentsHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.documentsHeader p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.documentUploadForm {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  margin-bottom: 14px;
+}
+
+.documentsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.documentUploadForm label {
+  display: grid;
+  gap: 7px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.documentUploadForm input,
+.documentUploadForm select,
+.documentUploadForm textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 11px 12px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.documentUploadForm input:focus,
+.documentUploadForm select:focus,
+.documentUploadForm textarea:focus {
+  border-color: rgba(183, 207, 89, 0.55);
+  box-shadow: 0 0 0 4px rgba(183, 207, 89, 0.16);
+}
+
+.documentsList {
+  display: grid;
+  gap: 10px;
+}
+
+.documentsItems {
+  display: grid;
+  gap: 10px;
+}
+
+.documentItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.documentItem strong {
+  display: block;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.documentItem span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+.documentItem small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.documentItemActions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.documentItemActions button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.documentItemActions button:hover {
+  border-color: rgba(183, 207, 89, 0.45);
+  color: var(--primary-dark);
+}
+
+.documentItemActions .dangerBtn {
+  border-color: rgba(180, 35, 24, 0.25);
+  color: #b42318;
+  background: rgba(180, 35, 24, 0.06);
+}
+
+@media (max-width: 900px) {
+  .documentsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .documentItem {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .documentItemActions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .documentItemActions button {
+    flex: 1;
+  }
+}

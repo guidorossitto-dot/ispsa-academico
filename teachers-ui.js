@@ -169,6 +169,7 @@
     const cancelEditBtn = document.getElementById("cancelEditTeacherBtn");
     const list = document.getElementById("teachersList");
     const detailPanel = document.getElementById("teacherDetailPanel");
+    const documentsList = document.getElementById("teacherDocumentsList");
 
     if (form) {
       form.addEventListener("submit", handleSubmitTeacher);
@@ -203,7 +204,8 @@
     }
 
     if (detailPanel) {
-      detailPanel.addEventListener("click", handleTeacherDetailClick);
+    detailPanel.addEventListener("click", handleTeacherDetailClick);
+    detailPanel.addEventListener("click", handleTeacherDocumentClick);
     }
   }
 
@@ -543,117 +545,179 @@
     }
   }
 
-  function renderTeacherDetail(teacher) {
-    const panel = document.getElementById("teacherDetailPanel");
+function renderTeacherDetail(teacher) {
+  const panel = document.getElementById("teacherDetailPanel");
 
-    if (!panel) return;
+  if (!panel) return;
 
-    const fullName = `${teacher.first_name || ""} ${teacher.last_name || ""}`.trim();
-    const status = teacher.status || "activo";
+  const fullName = `${teacher.first_name || ""} ${teacher.last_name || ""}`.trim();
+  const status = teacher.status || "activo";
 
-    panel.hidden = false;
+  panel.hidden = false;
 
-    panel.innerHTML = `
-      <div class="studentDetailHeader">
-        <div>
-          <p class="dashboardEyebrow">Ficha docente</p>
-          <h3>${escapeHTML(fullName || "Docente sin nombre")}</h3>
-          <p>
-            Consulta rápida de datos institucionales y observaciones internas.
-          </p>
-        </div>
-
-        <div class="studentDetailActions">
-          <button type="button" data-teacher-detail-action="print">Imprimir ficha</button>
-          <button type="button" data-teacher-detail-action="edit">Editar ficha</button>
-          <button type="button" data-teacher-detail-action="close" class="secondaryBtn">Cerrar</button>
-        </div>
+  panel.innerHTML = `
+    <div class="studentDetailHeader">
+      <div>
+        <p class="dashboardEyebrow">Ficha docente</p>
+        <h3>${escapeHTML(fullName || "Docente sin nombre")}</h3>
+        <p>
+          Consulta rápida de datos institucionales y observaciones internas.
+        </p>
       </div>
 
-      <div class="studentDetailGrid">
-        <article class="studentDetailCard">
-          <h4>Datos personales</h4>
-
-          <dl>
-            <div>
-              <dt>Apellido</dt>
-              <dd>${escapeHTML(teacher.last_name || "-")}</dd>
-            </div>
-
-            <div>
-              <dt>Nombre</dt>
-              <dd>${escapeHTML(teacher.first_name || "-")}</dd>
-            </div>
-
-            <div>
-              <dt>DNI</dt>
-              <dd>${escapeHTML(teacher.dni || "-")}</dd>
-            </div>
-
-            <div>
-              <dt>Email</dt>
-              <dd>${escapeHTML(teacher.email || "-")}</dd>
-            </div>
-
-            <div>
-              <dt>Teléfono</dt>
-              <dd>${escapeHTML(teacher.phone || "-")}</dd>
-            </div>
-          </dl>
-        </article>
-
-        <article class="studentDetailCard">
-          <h4>Datos institucionales</h4>
-
-          <dl>
-            <div>
-              <dt>Área / Materia</dt>
-              <dd>${escapeHTML(teacher.subject_area || "-")}</dd>
-            </div>
-
-            <div>
-              <dt>Cargo / Función</dt>
-              <dd>${escapeHTML(teacher.role_title || "-")}</dd>
-            </div>
-
-            <div>
-              <dt>Estado</dt>
-              <dd>
-                <strong class="statusPill statusPill--${escapeHTML(status)}">
-                  ${escapeHTML(formatTeacherStatus(status))}
-                </strong>
-              </dd>
-            </div>
-          </dl>
-        </article>
-
-        <article class="studentDetailCard">
-          <h4>Registro</h4>
-
-          <dl>
-            <div>
-              <dt>Fecha de alta</dt>
-              <dd>${escapeHTML(formatDateTime(teacher.created_at))}</dd>
-            </div>
-
-            <div>
-              <dt>Última modificación</dt>
-              <dd>${escapeHTML(formatDateTime(teacher.updated_at))}</dd>
-            </div>
-          </dl>
-        </article>
+      <div class="studentDetailActions">
+        <button type="button" data-teacher-detail-action="print">Imprimir ficha</button>
+        <button type="button" data-teacher-detail-action="edit">Editar ficha</button>
+        <button type="button" data-teacher-detail-action="close" class="secondaryBtn">Cerrar</button>
       </div>
+    </div>
 
-      <article class="studentDetailCard studentDetailNotes">
-        <h4>Observaciones</h4>
-        <p>${formatMultilineText(teacher.notes)}</p>
+    <div class="studentDetailGrid">
+      <article class="studentDetailCard">
+        <h4>Datos personales</h4>
+
+        <dl>
+          <div>
+            <dt>Apellido</dt>
+            <dd>${escapeHTML(teacher.last_name || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Nombre</dt>
+            <dd>${escapeHTML(teacher.first_name || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>DNI</dt>
+            <dd>${escapeHTML(teacher.dni || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Email</dt>
+            <dd>${escapeHTML(teacher.email || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Teléfono</dt>
+            <dd>${escapeHTML(teacher.phone || "-")}</dd>
+          </div>
+        </dl>
       </article>
-    `;
 
-    panel.dataset.currentTeacherId = teacher.id;
+      <article class="studentDetailCard">
+        <h4>Datos institucionales</h4>
 
-    panel.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+        <dl>
+          <div>
+            <dt>Área / Materia</dt>
+            <dd>${escapeHTML(teacher.subject_area || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Cargo / Función</dt>
+            <dd>${escapeHTML(teacher.role_title || "-")}</dd>
+          </div>
+
+          <div>
+            <dt>Estado</dt>
+            <dd>
+              <strong class="statusPill statusPill--${escapeHTML(status)}">
+                ${escapeHTML(formatTeacherStatus(status))}
+              </strong>
+            </dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="studentDetailCard">
+        <h4>Registro</h4>
+
+        <dl>
+          <div>
+            <dt>Fecha de alta</dt>
+            <dd>${escapeHTML(formatDateTime(teacher.created_at))}</dd>
+          </div>
+
+          <div>
+            <dt>Última modificación</dt>
+            <dd>${escapeHTML(formatDateTime(teacher.updated_at))}</dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+
+    <article class="studentDetailCard studentDetailNotes teacherDocumentsCard">
+      <div class="documentsHeader">
+        <div>
+          <h4>Documentación docente</h4>
+          <p>Subí y consultá archivos del legajo institucional.</p>
+        </div>
+      </div>
+
+      <form id="teacherDocumentForm" class="documentUploadForm">
+        <div class="documentsGrid">
+          <label>
+            Tipo de documento
+            <select name="document_type" required>
+              ${renderDocumentTypeOptions("teacher")}
+            </select>
+          </label>
+
+          <label>
+            Archivo
+            <input
+              type="file"
+              name="document_file"
+              accept=".pdf,image/jpeg,image/png,image/webp"
+              required
+            />
+          </label>
+
+          <label>
+            Título / descripción breve
+            <input
+              type="text"
+              name="title"
+              placeholder="Ej: Título docente, DNI frente y dorso"
+            />
+          </label>
+        </div>
+
+        <label>
+          Observaciones del documento
+          <textarea
+            name="notes"
+            rows="2"
+            placeholder="Opcional"
+          ></textarea>
+        </label>
+
+        <div class="formActions">
+          <button id="teacherDocumentSubmitBtn" type="submit">
+            Subir documento
+          </button>
+          <p id="teacherDocumentStatus" class="formStatus"></p>
+        </div>
+      </form>
+
+      <div id="teacherDocumentsList" class="documentsList">
+        <p class="adminWorkspaceEmpty">Cargando documentación...</p>
+      </div>
+    </article>
+
+    <article class="studentDetailCard studentDetailNotes">
+      <h4>Observaciones</h4>
+      <p>${formatMultilineText(teacher.notes)}</p>
+    </article>
+  `;
+
+  panel.dataset.currentTeacherId = teacher.id;
+
+  bindTeacherDocumentForm(teacher.id);
+  loadTeacherDocuments(teacher.id);
+
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
   function handleTeacherDetailClick(event) {
     const button = event.target.closest("[data-teacher-detail-action]");
@@ -702,6 +766,224 @@
     document.body.classList.add("isPrintingStudentDetail");
     window.print();
   }
+
+  function renderDocumentTypeOptions(personType) {
+  if (!App.documentsService) {
+    return `<option value="">Documentos no disponibles</option>`;
+  }
+
+  return App.documentsService
+    .getDocumentTypes(personType)
+    .map((item) => `
+      <option value="${escapeHTML(item.value)}">
+        ${escapeHTML(item.label)}
+      </option>
+    `)
+    .join("");
+}
+
+function bindTeacherDocumentForm(teacherId) {
+  const form = document.getElementById("teacherDocumentForm");
+
+  if (!form) return;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const status = document.getElementById("teacherDocumentStatus");
+    const submitBtn = document.getElementById("teacherDocumentSubmitBtn");
+    const formData = new FormData(form);
+
+    const file = formData.get("document_file");
+
+    try {
+      if (!App.documentsService) {
+        throw new Error("El servicio de documentos no está disponible.");
+      }
+
+      setStatus(status, "Subiendo documento...");
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+      }
+
+      await App.documentsService.uploadDocument({
+        personType: "teacher",
+        personId: teacherId,
+        documentType: normalizeText(formData.get("document_type")),
+        title: normalizeText(formData.get("title")),
+        notes: normalizeText(formData.get("notes")),
+        file
+      });
+
+      form.reset();
+      setStatus(status, "Documento subido correctamente.");
+
+      await loadTeacherDocuments(teacherId);
+    } catch (error) {
+      console.error(error);
+      setStatus(status, getFriendlyErrorMessage(error), true);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+      }
+    }
+  });
+}
+
+async function loadTeacherDocuments(teacherId) {
+  const list = document.getElementById("teacherDocumentsList");
+
+  if (!list) return;
+
+  try {
+    if (!App.documentsService) {
+      throw new Error("El servicio de documentos no está disponible.");
+    }
+
+    list.innerHTML = `<p class="adminWorkspaceEmpty">Cargando documentación...</p>`;
+
+    const documents = await App.documentsService.listDocuments("teacher", teacherId);
+
+    renderTeacherDocumentsList(documents);
+  } catch (error) {
+    console.error(error);
+
+    list.innerHTML = `
+      <p class="adminWorkspaceEmpty errorText">
+        No se pudo cargar la documentación: ${escapeHTML(error.message)}
+      </p>
+    `;
+  }
+}
+
+function renderTeacherDocumentsList(documents) {
+  const list = document.getElementById("teacherDocumentsList");
+
+  if (!list) return;
+
+  if (!documents.length) {
+    list.innerHTML = `
+      <p class="adminWorkspaceEmpty">
+        Todavía no hay documentación cargada.
+      </p>
+    `;
+    return;
+  }
+
+  list.innerHTML = `
+    <div class="documentsItems">
+      ${documents.map(renderTeacherDocumentItem).join("")}
+    </div>
+  `;
+}
+
+    function renderTeacherDocumentItem(document) {
+    const typeLabel = App.documentsService
+        ? App.documentsService.getDocumentTypeLabel("teacher", document.document_type)
+        : document.document_type;
+
+    return `
+        <article class="documentItem" data-document-id="${escapeHTML(document.id)}">
+        <div>
+            <strong>${escapeHTML(typeLabel)}</strong>
+            <span>${escapeHTML(document.title || document.file_name || "Documento")}</span>
+            <small>
+            ${escapeHTML(formatDateTime(document.created_at))}
+            ${document.file_size ? ` · ${escapeHTML(formatFileSize(document.file_size))}` : ""}
+            </small>
+        </div>
+
+        <div class="documentItemActions">
+            <button type="button" data-document-action="open">
+            Abrir
+            </button>
+            <button type="button" data-document-action="delete" class="dangerBtn">
+            Borrar
+            </button>
+        </div>
+        </article>
+    `;
+    }
+
+    async function handleTeacherDocumentClick(event) {
+  const button = event.target.closest("[data-document-action]");
+
+  if (!button) return;
+
+  const item = button.closest("[data-document-id]");
+  const documentId = item?.dataset.documentId;
+  const action = button.dataset.documentAction;
+
+  if (!documentId || !action) return;
+
+  const panel = document.getElementById("teacherDetailPanel");
+  const teacherId = panel?.dataset?.currentTeacherId;
+
+  if (action === "open") {
+    await openTeacherDocument(documentId);
+    return;
+  }
+
+  if (action === "delete") {
+    await deleteTeacherDocument(documentId, teacherId);
+  }
+}
+
+async function openTeacherDocument(documentId) {
+  try {
+    const panel = window.document.getElementById("teacherDetailPanel");
+    const teacherId = panel?.dataset?.currentTeacherId;
+
+    if (!teacherId) {
+      throw new Error("No se encontró el docente actual.");
+    }
+
+    const documents = await App.documentsService.listDocuments("teacher", teacherId);
+    const selectedDocument = documents.find((item) => item.id === documentId);
+
+    if (!selectedDocument) {
+      throw new Error("No se encontró el documento.");
+    }
+
+    const signedUrl = await App.documentsService.createSignedUrl(
+      selectedDocument.file_path
+    );
+
+    window.open(signedUrl, "_blank", "noopener,noreferrer");
+  } catch (error) {
+    console.error(error);
+    alert(getFriendlyErrorMessage(error));
+  }
+}
+
+    async function deleteTeacherDocument(documentId, teacherId) {
+    const confirmed = confirm(
+        "Esto va a borrar el documento del legajo.\n\n¿Querés continuar?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+        await App.documentsService.deleteDocument(documentId);
+        await loadTeacherDocuments(teacherId);
+    } catch (error) {
+        console.error(error);
+        alert(getFriendlyErrorMessage(error));
+    }
+}
+
+    function formatFileSize(size) {
+    const bytes = Number(size || 0);
+
+    if (!bytes) return "-";
+
+    if (bytes < 1024 * 1024) {
+        return `${Math.round(bytes / 1024)} KB`;
+    }
+
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
 
   async function archiveTeacher(teacher) {
     const fullName = `${teacher.first_name || ""} ${teacher.last_name || ""}`.trim();
