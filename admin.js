@@ -63,6 +63,14 @@
       return;
     }
 
+    if (page === "subjects") {
+      setWelcome(
+        `Bienvenido/a, ${name}. Desde acá podés administrar materias, espacios curriculares y asignación docente.`
+      );
+      return;
+    }
+
+
     setWelcome(
       `Bienvenido/a, ${name}. Desde este panel podés administrar alumnos, docentes, materias, inscripciones, notas y reportes.`
     );
@@ -94,32 +102,49 @@
         if (moduleName === "teachers") {
           window.location.href = "./teachers.html";
         }
+
+        if (moduleName === "subjects") {
+        window.location.href = "./subjects.html";
+        return;
+        }
+
       });
     });
   }
 
-  function renderCurrentPageModule() {
-    const page = document.body?.dataset?.adminPage;
+function renderCurrentPageModule() {
+  const page = document.body?.dataset?.adminPage;
 
-    if (page === "students") {
-      if (!window.App?.studentsUI) {
-        alert("El módulo de alumnos no está disponible.");
-        return;
-      }
-
-      window.App.studentsUI.renderStudentsModule();
+  if (page === "students") {
+    if (!window.App?.studentsUI) {
+      alert("El módulo de alumnos no está disponible.");
       return;
     }
 
-    if (page === "teachers") {
-      if (!window.App?.teachersUI) {
-        alert("El módulo de docentes no está disponible.");
-        return;
-      }
-
-      window.App.teachersUI.renderTeachersModule();
-    }
+    window.App.studentsUI.renderStudentsModule();
+    return;
   }
+
+  if (page === "teachers") {
+    if (!window.App?.teachersUI) {
+      alert("El módulo de docentes no está disponible.");
+      return;
+    }
+
+    window.App.teachersUI.renderTeachersModule();
+    return;
+  }
+
+  if (page === "subjects") {
+    if (!window.App?.subjectsUI) {
+      alert("El módulo de materias no está disponible.");
+      return;
+    }
+
+    window.App.subjectsUI.renderSubjectsModule();
+    return;
+  }
+}
 
   async function initAdminPage() {
     if (logoutBtn) {
