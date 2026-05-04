@@ -1670,3 +1670,12 @@ button {
     white-space: nowrap;
   }
 }
+
+/* ================================
+   Course status
+================================ */
+
+.statusPill--finalizada {
+  background: rgba(158, 212, 230, 0.22);
+  color: #31758a;
+}

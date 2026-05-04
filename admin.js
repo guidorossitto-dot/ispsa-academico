@@ -74,6 +74,13 @@
     setWelcome(
       `Bienvenido/a, ${name}. Desde este panel podés administrar alumnos, docentes, materias, inscripciones, notas y reportes.`
     );
+
+    if (page === "courses") {
+      setWelcome(
+        `Bienvenido/a, ${name}. Desde acá podés administrar cursadas, comisiones, horarios y docentes asignados.`
+      );
+      return;
+    }
   }
 
   async function handleLogout() {
@@ -105,6 +112,11 @@
 
         if (moduleName === "subjects") {
         window.location.href = "./subjects.html";
+        return;
+        }
+
+        if (moduleName === "courses") {
+        window.location.href = "./courses.html";
         return;
         }
 
@@ -142,6 +154,16 @@ function renderCurrentPageModule() {
     }
 
     window.App.subjectsUI.renderSubjectsModule();
+    return;
+  }
+
+  if (page === "courses") {
+    if (!window.App?.coursesUI) {
+      alert("El módulo de cursadas no está disponible.");
+      return;
+    }
+
+    window.App.coursesUI.renderCoursesModule();
     return;
   }
 }
