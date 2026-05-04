@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Docentes | ISPSA</title>
+
+  <link rel="stylesheet" href="./style.css?v=18" />
+</head>
+
+<body data-admin-page="teachers">
+  <header class="siteHeader">
+    <div class="siteHeaderBrand">
+      <img
+        src="./assets/logo-ispsa.png"
+        alt="Logo ISPSA"
+        class="siteHeaderLogo"
+      />
+
+      <div>
+        <strong>ISPSA</strong>
+        <span>Panel académico institucional</span>
+      </div>
+    </div>
+
+    <nav class="siteHeaderNav" aria-label="Navegación principal">
+      <a href="./admin.html">Panel</a>
+      <button id="logoutBtn" type="button" class="headerLogoutBtn">Salir</button>
+    </nav>
+  </header>
+
+  <main class="adminShell">
+    <section class="adminHero">
+      <div>
+        <p class="dashboardEyebrow">Módulo académico</p>
+        <h1>Docentes</h1>
+        <p id="adminWelcome" class="adminHeroText">
+          Cargando sesión...
+        </p>
+      </div>
+    </section>
+
+    <section id="adminWorkspace" class="adminWorkspace">
+      <p class="adminWorkspaceEmpty">
+        Cargando módulo de docentes...
+      </p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-client.js?v=5"></script>
+  <script src="./auth-service.js?v=5"></script>
+  <script src="./teachers-service.js?v=1"></script>
+  <script src="./teachers-ui.js?v=2"></script>
+  <script src="./admin.js?v=7"></script>
+</body>
+</html>

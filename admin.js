@@ -56,6 +56,13 @@
       return;
     }
 
+    if (page === "teachers") {
+      setWelcome(
+        `Bienvenido/a, ${name}. Desde acá podés administrar altas, edición, consulta y estado de docentes.`
+      );
+      return;
+    }
+
     setWelcome(
       `Bienvenido/a, ${name}. Desde este panel podés administrar alumnos, docentes, materias, inscripciones, notas y reportes.`
     );
@@ -81,6 +88,11 @@
 
         if (moduleName === "students") {
           window.location.href = "./students.html";
+          return;
+        }
+
+        if (moduleName === "teachers") {
+          window.location.href = "./teachers.html";
         }
       });
     });
@@ -96,6 +108,16 @@
       }
 
       window.App.studentsUI.renderStudentsModule();
+      return;
+    }
+
+    if (page === "teachers") {
+      if (!window.App?.teachersUI) {
+        alert("El módulo de docentes no está disponible.");
+        return;
+      }
+
+      window.App.teachersUI.renderTeachersModule();
     }
   }
 
